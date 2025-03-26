@@ -1,0 +1,72 @@
+BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+PRODID:-//Apple Inc.//macOS 15.3.2//EN
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:America/New_York
+BEGIN:DAYLIGHT
+DTSTART:20070311T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+TZNAME:EDT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20071104T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+TZNAME:EST
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+ATTENDEE;CN="Amy L. Moesch";CUTYPE=INDIVIDUAL;EMAIL="alg5@cornell.edu";R
+ OLE=REQ-PARTICIPANT:mailto:alg5@cornell.edu
+ATTENDEE;CN="ECON-FULL-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="ECON-FULL-FAC
+ ULTY-L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECON-FULL-FACULTY-L
+ @list.cornell.edu
+ATTENDEE;CN="ECON-POSTDOC-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ-postd
+ oc-faculty-l@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:econ-postdoc-
+ faculty-l@list.cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOMICS-FIELD
+ -L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECONOMICS-FIELD-L@list.
+ cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-STUDENTS-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOM
+ ICS-FIELD-STUDENTS-L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECONO
+ MICS-FIELD-STUDENTS-L@list.cornell.edu
+ATTENDEE;CN="ECON_VISITING_FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ_visi
+ ting_faculty-l@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:econ_visiti
+ ng_faculty-l@list.cornell.edu
+ATTENDEE;CN="Economics Front Office and Events Coordinator";CUTYPE=INDIV
+ IDUAL;EMAIL="economics-events@cornell.edu";ROLE=CHAIR:mailto:economics-e
+ vents@cornell.edu
+CREATED:20250320T170516Z
+DESCRIPTION:\nIndustrial Organization & Econometrics Workshop\nTuesday\,
+  March 27th\, 2025\n11:40 am to 12:55 pm\nStatler Hall 165\nPhilip Haile
+ \nYale University\n\nWhat Drives Voting: Estimates from Multi-Level Data
+ \nWith: Steve Berry and Christian Cox\n\n(Paper not available)\n\n\nFor 
+ additional information\, please contact economics-events<mailto:%20econo
+ mics-events@cornell.edu>@<mailto:%20economics-events@cornell.edu>cornell
+ .edu<mailto:%20economics-events@cornell.edu>.\n\n
+DTEND;TZID=America/New_York:20250327T125500
+DTSTAMP:20250326T184339Z
+DTSTART;TZID=America/New_York:20250327T114000
+LOCATION:Statler Hall 165
+ORGANIZER;CN="Economics Front Office and Events Coordinator";EMAIL="econ
+ omics-events@cornell.edu":mailto:economics-events@cornell.edu
+SEQUENCE:0
+SUMMARY:FW: Industrial Org. and Econometrics Workshop with Philip Haile 
+ [In-person]
+TRANSP:OPAQUE
+UID:184A12CE-73AA-4267-A87B-43F5F28D6978
+X-APPLE-CREATOR-IDENTITY:com.apple.exchangesync.exchangesyncd
+X-APPLE-NEEDS-REPLY:TRUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+TRIGGER:-PT15M
+UID:6E1D4BDE-5A3D-47D9-A940-DC7DD3B9100A
+X-WR-ALARMUID:6E1D4BDE-5A3D-47D9-A940-DC7DD3B9100A
+END:VALARM
+END:VEVENT
+END:VCALENDAR

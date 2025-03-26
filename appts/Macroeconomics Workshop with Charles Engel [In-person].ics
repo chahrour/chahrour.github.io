@@ -1,0 +1,92 @@
+BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+PRODID:-//Apple Inc.//macOS 15.3.2//EN
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:America/New_York
+BEGIN:DAYLIGHT
+DTSTART:20070311T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+TZNAME:EDT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20071104T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+TZNAME:EST
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+ATTENDEE;CN="Amy L. Moesch";CUTYPE=INDIVIDUAL;EMAIL="alg5@cornell.edu";R
+ OLE=REQ-PARTICIPANT:mailto:alg5@cornell.edu
+ATTENDEE;CN="ECON-FULL-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="ECON-FULL-FAC
+ ULTY-L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECON-FULL-FACULTY-L
+ @list.cornell.edu
+ATTENDEE;CN="ECON-POSTDOC-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ-postd
+ oc-faculty-l@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:econ-postdoc-
+ faculty-l@list.cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOMICS-FIELD
+ -L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECONOMICS-FIELD-L@list.
+ cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-STUDENTS-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOM
+ ICS-FIELD-STUDENTS-L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECONO
+ MICS-FIELD-STUDENTS-L@list.cornell.edu
+ATTENDEE;CN="ECON_VISITING_FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ_visi
+ ting_faculty-l@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:econ_visiti
+ ng_faculty-l@list.cornell.edu
+ATTENDEE;CN="Economics Front Office and Events Coordinator";CUTYPE=INDIV
+ IDUAL;EMAIL="economics-events@cornell.edu";ROLE=CHAIR:mailto:economics-e
+ vents@cornell.edu
+CREATED:20250320T185948Z
+DESCRIPTION:\nDepartment of Economics\nS. C. Tsiang Macroeconomics Works
+ hop\n\nThursday\, March 27th\n11:40am to 12:55pm\nSage Hall B11\n\nCharl
+ es Engel\nUniversity of Wisconsin\nCollateral Advantage: Exchange Rates\
+ , Capital Flows and Global Cycles<https://nam12.safelinks.protection.out
+ look.com/?url=https%3A%2F%2Fwww.nber.org%2Fpapers%2Fw31164&data=05%7C02%
+ 7Cryan.chahrour%40cornell.edu%7Cb9e901bb60b34ed8a83008dd67dd0c1f%7C5d7e4
+ 3661b9b45cf8e79b14b27df46e1%7C0%7C0%7C638780921271980993%7CUnknown%7CTWF
+ pbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkF
+ OIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=o3ZYv3t2OHQNF0sQUExFsXW
+ ri2pj46V91feiQxlXOkc%3D&reserved=0>\nWith Michael B. Devereux and Steve 
+ Pak Yeung Wu\n\nAbstract:\nWe construct a two-country New Keynesian mode
+ l in which US government debt has an advantage as a superior collateral 
+ asset in the balance sheets of banks. The model can account for the obse
+ rved response of the US dollar and US bond returns to a global downturn\
+ , in particular when the downturn is associated with a global financial 
+ crisis. In our model\, the U.S. enjoys an “exorbitant privilege” as its 
+ government bonds are desired by banks both in the U.S. and abroad as sup
+ erior collateral. In times of global stress\, the dollar appreciates and
+  the “convenience yield” earned by U.S. government bonds increases. Ther
+ e is “retrenchment” - each country reduces its holdings of foreign asset
+ s - a critical determinant of which is the endogenous response of prices
+  and returns. In addition\, the model displays a U.S. real exchange rate
+  appreciation despite that domestic absorption in the US falls relative 
+ to the rest of the world during a global downturn\, thus addressing the 
+ “reserve currency paradox” highlighted by Maggiori (2017).\nFor addition
+ al information\, please contact economics-events@cornell.edu<mailto:econ
+ omics-events@cornell.edu>.\n\n
+DTEND;TZID=America/New_York:20250327T125500
+DTSTAMP:20250326T184342Z
+DTSTART;TZID=America/New_York:20250327T114000
+LAST-MODIFIED:20250320T185948Z
+LOCATION:Sage Hall B11
+ORGANIZER;CN="Economics Front Office and Events Coordinator";EMAIL="econ
+ omics-events@cornell.edu":mailto:economics-events@cornell.edu
+SEQUENCE:0
+SUMMARY:FW: Macroeconomics Workshop with Charles Engel [In-person]
+TRANSP:OPAQUE
+UID:B3787A68-4B1D-4E85-BCF4-E98036A9E7F8
+X-APPLE-CREATOR-IDENTITY:com.apple.exchangesync.exchangesyncd
+X-APPLE-NEEDS-REPLY:TRUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+TRIGGER:-PT15M
+UID:06FBD4F3-1896-4DF4-AA48-D642648E1B6B
+X-WR-ALARMUID:06FBD4F3-1896-4DF4-AA48-D642648E1B6B
+END:VALARM
+END:VEVENT
+END:VCALENDAR

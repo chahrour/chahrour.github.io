@@ -1,0 +1,109 @@
+BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+PRODID:-//Apple Inc.//macOS 15.3.2//EN
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:America/New_York
+BEGIN:DAYLIGHT
+DTSTART:20070311T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+TZNAME:EDT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20071104T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+TZNAME:EST
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+ATTENDEE;CN="Beth A. Taylor";CUTYPE=INDIVIDUAL;EMAIL="bat49@cornell.edu"
+ ;ROLE=CHAIR:mailto:bat49@cornell.edu
+ATTENDEE;CN="ECON-FULL-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="ECON-FULL-FAC
+ ULTY-L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECON-FULL-FACULTY-L
+ @list.cornell.edu
+ATTENDEE;CN="ECON-POSTDOC-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ-postd
+ oc-faculty-l@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:econ-postdoc-
+ faculty-l@list.cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOMICS-FIELD
+ -L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECONOMICS-FIELD-L@list.
+ cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-STUDENTS-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOM
+ ICS-FIELD-STUDENTS-L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECONO
+ MICS-FIELD-STUDENTS-L@list.cornell.edu
+ATTENDEE;CN="ECON_VISITING_FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ_visi
+ ting_faculty-l@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:econ_visiti
+ ng_faculty-l@list.cornell.edu
+ATTENDEE;CN="LEW-ANNOUNCE-L";CUTYPE=INDIVIDUAL;EMAIL="LEW-ANNOUNCE-L@lis
+ t.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:LEW-ANNOUNCE-L@list.cornell.e
+ du
+CREATED:20250317T181110Z
+DESCRIPTION:Labor Economics Workshop\n[cid:image001.png@01DB9746.62723B8
+ 0]\nJoseph Mullins\, University of Minnesota\nMonday\, March 24\, 2025\,
+  11:40 am – 12:55 pm\n115 Ives Hall\nThe Workshop will be in-person only
+ \n\n\n\nDesigning cash transfers in the presence of children's human cap
+ ital formation\n\nAbstract:  This paper finds that accounting for the hu
+ man capital development of children has a quantitatively large effect on
+  the true costs and benefits of providing cash assistance to single moth
+ ers in the United States. A dynamic model of work\, welfare participatio
+ n\, and parental investment in children introduces a formal apparatus fo
+ r calculating costs and benefits when individuals respond to incentives.
+  The model provides a tractable outcome equation in which a policy’s eff
+ ect on child\nskills can be understood through its impact on two economi
+ c resources in the household – time and money – and the share of each re
+ source as factors in the production of skills. These key causal paramete
+ rs are cleanly identified by policy variation through the 1990s. The mod
+ el also admits simple and interpretable formulae for optimal nonlinear t
+ ransfers in the style of Mirrlees (1971)\, with novel features arising w
+ hen child skill formation is accounted for. Using a broadly conservative
+ \nempirical strategy\, estimates imply that optimal transfers are about 
+ 20% more generous than the US benchmark and shaped very differently. In 
+ contrast to current policies\, the optimal policy discourages labor supp
+ ly at the bottom of the income distribution due to the costly estimated 
+ impacts of work on child development. The finding underscores the import
+ ance of reconciling results in the literature on the developmental effec
+ ts of maternal employment. Finally\, a counterfactual model exercise sug
+ gests that changes to the welfare and tax environment after 1996 had neg
+ ative average effects both on maternal welfare and child skill outcomes\
+ , with a significant degree of redistribution across latent dimensions.\
+ n\nPaper<https://nam12.safelinks.protection.outlook.com/?url=https%3A%2F
+ %2Fwww.josephlyonmullins.com%2Fpapers%2FDesigningCashTransfers_Children_
+ Draft.pdf&data=05%7C02%7Cryan.chahrour%40cornell.edu%7Cee4a608b69284d4a9
+ 7dd08dd657f151b%7C5d7e43661b9b45cf8e79b14b27df46e1%7C0%7C0%7C63877831867
+ 4741963%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAw
+ MCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=
+ EEXQD7Q2pst1gTya9baTyOi%2FqerCld0OF8qGiAspEjs%3D&reserved=0>\n\n\nWorksh
+ op website: https://economics.cornell.edu/upcoming-workshops<https://nam
+ 12.safelinks.protection.outlook.com/?url=https%3A%2F%2Feconomics.cornell
+ .edu%2Fupcoming-workshops&data=05%7C02%7Cryan.chahrour%40cornell.edu%7Ce
+ e4a608b69284d4a97dd08dd657f151b%7C5d7e43661b9b45cf8e79b14b27df46e1%7C0%7
+ C0%7C638778318674779374%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUs
+ IlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0
+ %7C%7C%7C&sdata=7mfPkQQtg1V%2B6h8vM4a9Ul6iklj7RwAhbhnc98dKE%2B4%3D&reser
+ ved=0>\n\nIf you have any questions\, please contact Beth Taylor: bat49@
+ cornell.edu<mailto:bat49@cornell.edu>\n
+DTEND;TZID=America/New_York:20250324T125500
+DTSTAMP:20250326T184316Z
+DTSTART;TZID=America/New_York:20250324T114000
+LOCATION:Ives 115
+ORGANIZER;CN="Beth A. Taylor";EMAIL="bat49@cornell.edu":mailto:bat49@cor
+ nell.edu
+SEQUENCE:0
+SUMMARY:Labor Economics Workshop | Joseph Mullins | University of Minnes
+ ota | March 24
+TRANSP:OPAQUE
+UID:9BCB88DE-DE62-4C5B-A065-7A2C94330367
+X-APPLE-CREATOR-IDENTITY:com.apple.exchangesync.exchangesyncd
+BEGIN:VALARM
+ACKNOWLEDGED:20250324T164138Z
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+TRIGGER:-PT15M
+UID:1282737C-620E-4BAD-A553-3ED0E5567024
+X-WR-ALARMUID:1282737C-620E-4BAD-A553-3ED0E5567024
+END:VALARM
+END:VEVENT
+END:VCALENDAR
