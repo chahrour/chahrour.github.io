@@ -1,0 +1,102 @@
+BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+PRODID:-//Apple Inc.//macOS 15.3.2//EN
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:America/New_York
+BEGIN:DAYLIGHT
+DTSTART:20070311T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+TZNAME:EDT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20071104T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+TZNAME:EST
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+ATTENDEE;CN="Amy L. Moesch";CUTYPE=INDIVIDUAL;EMAIL="alg5@cornell.edu";R
+ OLE=REQ-PARTICIPANT:mailto:alg5@cornell.edu
+ATTENDEE;CN="ECON-FULL-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="ECON-FULL-FAC
+ ULTY-L@list.cornell.edu";ROLE=OPT-PARTICIPANT:mailto:ECON-FULL-FACULTY-L
+ @list.cornell.edu
+ATTENDEE;CN="ECON-POSTDOC-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ-postd
+ oc-faculty-l@list.cornell.edu";ROLE=OPT-PARTICIPANT:mailto:econ-postdoc-
+ faculty-l@list.cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOMICS-FIELD
+ -L@list.cornell.edu";ROLE=OPT-PARTICIPANT:mailto:ECONOMICS-FIELD-L@list.
+ cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-STUDENTS-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOM
+ ICS-FIELD-STUDENTS-L@list.cornell.edu";ROLE=OPT-PARTICIPANT:mailto:ECONO
+ MICS-FIELD-STUDENTS-L@list.cornell.edu
+ATTENDEE;CN="ECON_VISITING_FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ_visi
+ ting_faculty-l@list.cornell.edu";ROLE=OPT-PARTICIPANT:mailto:econ_visiti
+ ng_faculty-l@list.cornell.edu
+ATTENDEE;CN="Economics Front Office and Events Coordinator";CUTYPE=INDIV
+ IDUAL;EMAIL="economics-events@cornell.edu";ROLE=CHAIR:mailto:economics-e
+ vents@cornell.edu
+ATTENDEE;CN="Matias Navarro";CUTYPE=INDIVIDUAL;EMAIL="min26@cornell.edu"
+ ;ROLE=OPT-PARTICIPANT:mailto:min26@cornell.edu
+ATTENDEE;CN="Omar Andujar";CUTYPE=INDIVIDUAL;EMAIL="oa243@cornell.edu";R
+ OLE=OPT-PARTICIPANT:mailto:oa243@cornell.edu
+ATTENDEE;CN="Tashfeen Ferdous Saeed";CUTYPE=INDIVIDUAL;EMAIL="tfs44@corn
+ ell.edu";ROLE=OPT-PARTICIPANT:mailto:tfs44@cornell.edu
+ATTENDEE;CN="Yiwei Sun";CUTYPE=INDIVIDUAL;EMAIL="ys556@cornell.edu";ROLE
+ =OPT-PARTICIPANT:mailto:ys556@cornell.edu
+CREATED:20250318T175405Z
+DESCRIPTION:Department of Economics\nMicroeconomic Theory Workshop\nTues
+ day\, March 25\n11:40 am to 12:55 pm\nIves Hall 116\nDirk Bergemann\nYal
+ e University\n\nData-Driven Mechanism Design: Jointly Eliciting Preferen
+ ces and Information<https://nam12.safelinks.protection.outlook.com/?url=
+ https%3A%2F%2Fdrive.google.com%2Fdrive%2Fu%2F2%2Ffolders%2F1nXSb4_I90Tkj
+ cAJEsNmpizBEC9nUkz4i&data=05%7C02%7Cryan.chahrour%40cornell.edu%7C31a03a
+ 8c82944b50091d08dd6b9ca001%7C5d7e43661b9b45cf8e79b14b27df46e1%7C0%7C0%7C
+ 638785042657853156%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiO
+ iIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7
+ C%7C&sdata=uUX%2BJg0v1sVJa%2FYqoKNmh%2BbqcJwV%2FHEmfvbg6q3xGrs%3D&reserv
+ ed=0>\nWith: Marek Bojko\, Paul Dütting\, Renato Paes Leme\, Haifeng Xu\
+ , and Song Zuo\n\nAbstract: We study mechanism design when agents have p
+ rivate preferences and private information about a common payoff-relevan
+ t state. We show that standard message-driven mechanisms cannot implemen
+ t socially efficient allocations when agents have multidimensional types
+ \, even under favorable conditions. To overcome this limitation\, we pro
+ pose data-driven mechanisms that leverage additional post-allocation inf
+ ormation\, modeled as an estimator of the payoff-relevant state. Our dat
+ a-driven mechanisms extend the classic Vickrey-Clarke-Groves class. We s
+ how that they achieve exact implementation in posterior equilibrium when
+  the state is either fully revealed or the utility is affine in an unbia
+ sed estimator. We also show that they achieve approximate implementation
+  with a consistent estimator\, converging to exact implementation as the
+  estimator converges\, and present bounds on the convergence rate. We de
+ monstrate applications to digital advertising auctions and large languag
+ e model (LLM)-based mechanisms\, where user engagement naturally reveals
+  relevant information.\n\n\n\nFor additional information\, please contac
+ t economics-events@cornell.edu.\n\n
+DTEND;TZID=America/New_York:20250325T125500
+DTSTAMP:20250326T184326Z
+DTSTART;TZID=America/New_York:20250325T114000
+LOCATION:Ives Hall 116
+ORGANIZER;CN="Economics Front Office and Events Coordinator";EMAIL="econ
+ omics-events@cornell.edu":mailto:economics-events@cornell.edu
+SEQUENCE:0
+SUMMARY:TODAY: Microeconomics & Computer Science Workshop with Dirk Berg
+ emann [In-person]
+TRANSP:OPAQUE
+UID:F0BDFAAF-63B8-4B64-A0DB-18B66009203B
+X-APPLE-CREATOR-IDENTITY:com.apple.exchangesync.exchangesyncd
+X-APPLE-NEEDS-REPLY:TRUE
+BEGIN:VALARM
+ACKNOWLEDGED:20250325T154820Z
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+TRIGGER:-PT15M
+UID:E92C978A-FE28-4694-9DB6-98BEB7E79172
+X-WR-ALARMUID:E92C978A-FE28-4694-9DB6-98BEB7E79172
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,93 @@
+BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+PRODID:-//Apple Inc.//macOS 15.3.2//EN
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:America/New_York
+BEGIN:DAYLIGHT
+DTSTART:20070311T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+TZNAME:EDT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20071104T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+TZNAME:EST
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+ATTENDEE;CN="Amy L. Moesch";CUTYPE=INDIVIDUAL;EMAIL="alg5@cornell.edu";R
+ OLE=CHAIR:mailto:alg5@cornell.edu
+ATTENDEE;CN="ECON-FULL-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="ECON-FULL-FAC
+ ULTY-L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECON-FULL-FACULTY-L
+ @list.cornell.edu
+ATTENDEE;CN="ECON-POSTDOC-FACULTY-L";CUTYPE=INDIVIDUAL;EMAIL="econ-postd
+ oc-faculty-l@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:econ-postdoc-
+ faculty-l@list.cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOMICS-FIELD
+ -L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECONOMICS-FIELD-L@list.
+ cornell.edu
+ATTENDEE;CN="ECONOMICS-FIELD-STUDENTS-L";CUTYPE=INDIVIDUAL;EMAIL="ECONOM
+ ICS-FIELD-STUDENTS-L@list.cornell.edu";ROLE=REQ-PARTICIPANT:mailto:ECONO
+ MICS-FIELD-STUDENTS-L@list.cornell.edu
+CREATED:20250324T140440Z
+DESCRIPTION:Department of Economics Workshop\n\nTuesday\, March 25\, 202
+ 5\n8:45 a.m. – 10:00 a.m.\, 225 ILR CC\n\nNicholas Swanson\n(Stanford Un
+ iversity)\n\nUnder-Training by Employers in Informal Labor Markets:\nEvi
+ dence from Burundi\nAbstract: Workers in LMICs obtain limited human capi
+ tal through on-the-job experience\, but the reasons for this are unclear
+ . We test whether one friction contributes to low worker productivity: f
+ irms’ unwillingness to train because they do not appropriate the returns
+  from training. We study casual labor markets in Burundi\, where employe
+ rs can train workers in a newly introduced agricultural practice in the 
+ region\, row planting—a technique that substantially raises yields. In a
+  first field experiment\, in some randomly selected local labor markets 
+ (villages)\, we induce one-third of employers to train workers in row pl
+ anting\, which leads to a 20 p.p. increase in the share of skilled worke
+ rs in the village. Training generates meaningful economic returns: emplo
+ yers in treated villages increase their adoption of row planting by 10 p
+ .p. (20%)\, which raises farm profitability by 9%. However\, employers f
+ ail to appropriate most of this surplus: Two-thirds of it is captured by
+  non-training employers because many of the trained workers work for oth
+ er people after the training. In a second experiment\, we randomize empl
+ oyers into a condition that increases the likelihood that the worker wil
+ l return to work for the employer in the future. Employers receiving thi
+ s guarantee are 50 p.p. likelier to train the worker. This suggests that
+  the wedge between the private and social returns from investments meani
+ ngfully reduces worker productivity.\n\n\nJoin Zoom Meeting\nhttps://cor
+ nell.zoom.us/j/95452341516?pwd=lZf8e2MVtRnWORvZDLvscWAM9MjvIC.1<https://
+ nam12.safelinks.protection.outlook.com/?url=https%3A%2F%2Fcornell.zoom.u
+ s%2Fj%2F95452341516%3Fpwd%3DlZf8e2MVtRnWORvZDLvscWAM9MjvIC.1&data=05%7C0
+ 2%7Cryan.chahrour%40cornell.edu%7Cb55fca18e49e4c220a1a08dd6adcce1a%7C5d7
+ e43661b9b45cf8e79b14b27df46e1%7C0%7C0%7C638784218755111597%7CUnknown%7CT
+ WFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsI
+ kFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=krT4fAuFbjsZSL%2BHcwM
+ 7mkr7x8QXqXBkinRZWfiNcb0%3D&reserved=0>\n\nMeeting ID: 954 5234 1516\nPa
+ sscode: 913994\n\nIf you have any questions\, please contact Amy Moesch\
+ , alg5@cornell.edu<mailto:alg5@cornell.edu>.\n\n
+DTEND;TZID=America/New_York:20250325T100000
+DTSTAMP:20250326T184322Z
+DTSTART;TZID=America/New_York:20250325T084500
+LAST-MODIFIED:20250324T140440Z
+LOCATION:225 ILR CC and via Zoom
+ORGANIZER;CN="Amy L. Moesch";EMAIL="alg5@cornell.edu":mailto:alg5@cornel
+ l.edu
+SEQUENCE:0
+SUMMARY:Department of Economics Workshop - Nicholas Swanson
+TRANSP:OPAQUE
+UID:4B8C85F7-5AD1-4EEA-BCB6-9CB91E5DB17A
+X-APPLE-CREATOR-IDENTITY:com.apple.exchangesync.exchangesyncd
+X-APPLE-NEEDS-REPLY:TRUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+TRIGGER:-PT15M
+UID:3796F9C2-413C-4BB9-8D7F-994CC170E32D
+X-WR-ALARMUID:3796F9C2-413C-4BB9-8D7F-994CC170E32D
+END:VALARM
+END:VEVENT
+END:VCALENDAR
