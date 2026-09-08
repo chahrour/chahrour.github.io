@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Knight Lecture — Suggestions</title>
+
+<script>
+/* ============================================================================
+   SETTINGS — edit this block, then upload this file to your website.
+   ========================================================================= */
+const CONFIG = {
+
+  // The Web app URL from your Apps Script deployment. Ends in /exec
+  endpoint: "https://script.google.com/macros/s/AKfycbwI6ZDE5LLHTqPZQXcZzU3ubkN0llFQEFtMPTNT9Yy1Vabckk7Xv9DjAylyaWGP3ZK8/exec",
+
+  heading:  "Knight Lecture",
+  question: "Please propose anyone you would like to suggest for the Knight lecture.",
+  intro:    "Click Complete once you've made your proposal to see (and second) " +
+            "others' suggestions.",
+
+  placeholder:   "Name of the person you'd like to propose",
+  addLabel:      "Add proposal",
+  completeLabel: "Complete",
+  finishLabel:   "Submit and exit",
+
+  // Shown on the final screen.
+  doneHeading: "Thank you — you're done.",
+  doneNote:    "Your suggestions and seconds are recorded. You can close this " +
+               "page, or reopen the survey if you want to change something.",
+
+  verbSecond:    "Second",
+  verbSeconded:  "Seconded",
+  nounSingular:  "second",
+  nounPlural:    "seconds",
+
+  askForName:  true,       // show the "your name" box
+  defaultSort: "top",      // "top", "new", or "random"
+  refreshSeconds: 20,      // list refresh once revealed; 0 turns it off
+
+  footnote: "Responses are recorded anonymously unless you enter your name."
+};
+/* ======================================================================== */
+</script>
+
+<style>
+  :root {
+    color-scheme: light;
+    --bg:      #ffffff;
+    --panel:   #f7f7f5;
+    --ink:     #1a1a18;
+    --muted:   #6b6b66;
+    --line:    #e0e0da;
+    --accent:  #2f5d50;
+    --accent-ink: #ffffff;
+    --warn-bg: #fdf6e3;
+    --warn-line:#e8d9a8;
+    --ok:      #2f5d50;
+    --radius:  8px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg:      #16171a;
+      --panel:   #1e2024;
+      --ink:     #e9e9e6;
+      --muted:   #9a9a94;
+      --line:    #33353a;
+      --accent:  #6fae9b;
+      --accent-ink: #10201b;
+      --warn-bg: #2a2618;
+      --warn-line:#4a4327;
+      --ok:      #6fae9b;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem 4rem;
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.55 var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 44rem; margin: 0 auto; }
+
+  h1 { font-size: 1.5rem; line-height: 1.25; margin: 0 0 .35rem; letter-spacing: -.01em; }
+  .question { font-size: 1.05rem; margin: 0 0 .5rem; }
+  .intro { color: var(--muted); margin: 0 0 1.5rem; font-size: .95rem; }
+
+  /* ---------- stage 1: propose ---------- */
+  form { margin: 0 0 1rem; }
+  .field { display: block; margin-bottom: .6rem; }
+  textarea, input[type=text] {
+    width: 100%; font: inherit; color: inherit;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: .6rem .7rem; resize: vertical;
+  }
+  textarea { min-height: 3.2rem; }
+  textarea:focus, input[type=text]:focus {
+    outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent);
+  }
+  .row { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+  .count { color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+  .count.over { color: #b23b3b; }
+
+  button {
+    font: inherit; cursor: pointer; border-radius: var(--radius);
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    padding: .45rem .9rem; transition: background .12s, border-color .12s;
+  }
+  button:hover:not(:disabled) { border-color: var(--muted); }
+  button:disabled { opacity: .5; cursor: default; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button.primary:hover:not(:disabled) { filter: brightness(1.08); }
+
+  .notice {
+    background: var(--warn-bg); border: 1px solid var(--warn-line);
+    border-radius: var(--radius); padding: .7rem .8rem; margin: 0 0 .8rem; font-size: .9rem;
+  }
+  .notice p { margin: 0 0 .5rem; }
+  .notice button { padding: .3rem .7rem; font-size: .85rem; }
+  .error { color: #b23b3b; font-size: .9rem; margin: .5rem 0 0; }
+  .said { color: var(--ok); font-size: .9rem; margin: .5rem 0 0; }
+
+  /* what you have added so far, so stage 1 isn't a black hole */
+  .yours { border-top: 1px solid var(--line); margin-top: 1.5rem; padding-top: 1rem; }
+  .yours h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em;
+              color: var(--muted); margin: 0 0 .5rem; font-weight: 600; }
+  .yours li { display: block; padding: .2rem 0; border: none; }
+  .yours .tag { color: var(--muted); font-size: .82rem; }
+
+  .finish { border-top: 1px solid var(--line); margin-top: 1.5rem; padding-top: 1.25rem; }
+
+  /* ---------- stage 2: review ---------- */
+  .toolbar {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 1rem; flex-wrap: wrap;
+    border-top: 1px solid var(--line); padding-top: 1rem; margin-bottom: .25rem;
+  }
+  .tally { color: var(--muted); font-size: .85rem; }
+  .sorts { display: flex; gap: .25rem; }
+  .sorts button { background: none; border: none; padding: .2rem .5rem;
+                  color: var(--muted); font-size: .85rem; border-radius: 4px; }
+  .sorts button[aria-pressed=true] { color: var(--ink); background: var(--panel); font-weight: 600; }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+  #list li {
+    display: flex; gap: .9rem; align-items: flex-start;
+    padding: .9rem 0; border-bottom: 1px solid var(--line);
+  }
+  #list li.flash { animation: flash 1.4s ease-out; }
+  @keyframes flash { from { background: var(--warn-bg); } to { background: transparent; } }
+
+  .body { flex: 1; min-width: 0; }
+  .text { margin: 0; overflow-wrap: anywhere; }
+  .meta { color: var(--muted); font-size: .82rem; margin: .25rem 0 0; }
+
+  .secondbtn {
+    flex: 0 0 auto; min-width: 6.5rem; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: .1rem;
+    padding: .4rem .6rem; line-height: 1.2;
+  }
+  .secondbtn .n { font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .secondbtn .lbl { font-size: .72rem; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); }
+  .secondbtn[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .secondbtn[aria-pressed=true] .lbl { color: var(--accent-ink); opacity: .9; }
+
+  /* the button is a toggle: say "Undo" on hover once seconded */
+  .secondbtn .on, .secondbtn .undo { display: none; }
+  .secondbtn[aria-pressed=true] .off { display: none; }
+  .secondbtn[aria-pressed=true] .on  { display: inline; }
+  .secondbtn[aria-pressed=true]:hover .on,
+  .secondbtn[aria-pressed=true]:focus-visible .on { display: none; }
+  .secondbtn[aria-pressed=true]:hover .undo,
+  .secondbtn[aria-pressed=true]:focus-visible .undo { display: inline; }
+  .secondbtn[aria-pressed=true]:hover { filter: brightness(.92); }
+
+  .secondbtn.own { cursor: default; opacity: .55; }
+  .secondbtn.own:hover { border-color: var(--line); filter: none; }
+
+  .linkbtn {
+    background: none; border: none; padding: 0; color: var(--muted);
+    font-size: .82rem; text-decoration: underline; text-underline-offset: 2px;
+  }
+  .linkbtn:hover { color: var(--ink); border-color: transparent; }
+  .linkbtn.danger { color: #b23b3b; }
+  .confirm { display: inline-flex; gap: .5rem; align-items: baseline; }
+
+  .empty, .status { color: var(--muted); font-size: .9rem; padding: 1rem 0; }
+
+  /* ---------- stage 3: finished ---------- */
+  .done {
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: var(--radius); background: var(--panel);
+    padding: 1.1rem 1.2rem; margin: .5rem 0 1rem;
+  }
+  .donemsg { margin: 0 0 .4rem; font-size: 1.05rem; font-weight: 600; }
+  .donenote { margin: 0; color: var(--muted); font-size: .9rem; }
+  .donenote + .donenote { margin-top: .5rem; }
+  footer { color: var(--muted); font-size: .8rem; margin-top: 1.5rem; }
+
+  @media (max-width: 30rem) {
+    #list li { gap: .6rem; }
+    .secondbtn { min-width: 5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1 id="heading"></h1>
+  <p class="question" id="question"></p>
+  <p class="intro" id="intro"></p>
+
+  <!-- =============== STAGE 1: propose, without seeing anyone else =========== -->
+  <section id="stage-propose">
+    <form id="addform">
+      <label class="field" id="namefield" hidden>
+        <input type="text" id="name" maxlength="60" placeholder="Your name (optional)"
+               aria-label="Your name, optional">
+      </label>
+      <label class="field">
+        <textarea id="text" maxlength="200" aria-label="Your proposal"></textarea>
+      </label>
+      <div id="dupe" class="notice" hidden></div>
+      <div class="row">
+        <button type="submit" id="submit"></button>
+        <span class="count" id="chars"></span>
+      </div>
+      <p class="error" id="formerror" hidden></p>
+      <p class="said" id="said" hidden></p>
+    </form>
+
+    <div class="yours" id="yourswrap" hidden>
+      <h2>Added by you</h2>
+      <ul id="yours"></ul>
+    </div>
+
+    <div class="finish">
+      <div class="row">
+        <button type="button" class="primary" id="complete"></button>
+        <span class="count" id="finishhint"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== STAGE 2: everyone's proposals ========================== -->
+  <section id="stage-review" hidden>
+    <div class="toolbar">
+      <span class="tally" id="tally">Loading…</span>
+      <div class="sorts" role="group" aria-label="Sort proposals">
+        <button type="button" data-sort="top">Most seconded</button>
+        <button type="button" data-sort="new">Newest</button>
+        <button type="button" data-sort="random">Shuffle</button>
+      </div>
+    </div>
+    <ul id="list" aria-live="polite"></ul>
+    <p class="empty" id="empty" hidden>No proposals yet.</p>
+    <p class="status" id="status" role="status"></p>
+    <div class="finish">
+      <div class="row">
+        <button type="button" class="primary" id="finish"></button>
+        <button type="button" class="linkbtn" id="back">Add another proposal</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== STAGE 3: finished ===================================== -->
+  <section id="stage-done" hidden>
+    <div class="done">
+      <p class="donemsg" id="donemsg"></p>
+      <p class="donenote" id="donenote"></p>
+      <p class="donenote" id="donesummary"></p>
+    </div>
+    <p><button type="button" class="linkbtn" id="reopen">Reopen the survey</button></p>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  var state = {
+    proposals: [], open: true, participants: 0, maxLength: 120,
+    sort: CONFIG.defaultSort, order: {}, busy: false, loaded: false,
+    stage: 'propose', added: []
+  };
+
+  /* ------------------------------------------------------- who is clicking */
+  function stored(key, fallback) {
+    try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+  }
+  function store(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) {}
+  }
+
+  var VOTER = (function () {
+    var KEY = 'proposal-survey-id';
+    var id = stored(KEY, '');
+    if (!/^[A-Za-z0-9_-]{6,64}$/.test(id)) {
+      id = 'p' + Math.random().toString(36).slice(2, 10) +
+                 Math.random().toString(36).slice(2, 10);
+      store(KEY, id);
+    }
+    return id;
+  })();
+
+  var STAGE_KEY = 'proposal-survey-stage';
+  var ADDED_KEY = 'proposal-survey-added';
+  var NAME_KEY  = 'proposal-survey-name';
+  var SUMMARY_KEY = 'proposal-survey-summary';
+
+  /* ------------------------------------------------------------ transport */
+  /* JSONP: reaches an Apps Script web app from any domain with no CORS
+     preflight to go wrong. */
+  var seq = 0;
+  function api(params) {
+    return new Promise(function (resolve, reject) {
+      if (!CONFIG.endpoint || CONFIG.endpoint.indexOf('http') !== 0) {
+        reject(new Error('This page has not been connected to a spreadsheet yet.'));
+        return;
+      }
+      var cb = '__ps' + (++seq) + '_' + Date.now();
+      var s = document.createElement('script');
+      var timer = setTimeout(function () {
+        done(); reject(new Error('The server did not respond.'));
+      }, 25000);
+      function done() {
+        clearTimeout(timer);
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        if (s.parentNode) s.parentNode.removeChild(s);
+      }
+      window[cb] = function (res) {
+        done();
+        if (res && res.ok) resolve(res.data);
+        else reject(new Error((res && res.error) || 'Something went wrong.'));
+      };
+      s.onerror = function () { done(); reject(new Error('Could not reach the server.')); };
+      params.voter = VOTER;
+      params.callback = cb;
+      var q = [];
+      for (var k in params) {
+        if (params[k] !== undefined && params[k] !== null && params[k] !== '') {
+          q.push(encodeURIComponent(k) + '=' + encodeURIComponent(params[k]));
+        }
+      }
+      s.src = CONFIG.endpoint + (CONFIG.endpoint.indexOf('?') > -1 ? '&' : '?') + q.join('&');
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ------------------------------------------------------------- utilities */
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function noun(n) { return n === 1 ? CONFIG.nounSingular : CONFIG.nounPlural; }
+
+  function when(iso) {
+    if (!iso) return '';
+    var then = new Date(iso), mins = Math.round((Date.now() - then) / 60000);
+    if (isNaN(mins)) return '';
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + ' min ago';
+    if (mins < 1440) return Math.round(mins / 60) + ' hr ago';
+    var days = Math.round(mins / 1440);
+    if (days < 30) return days + (days === 1 ? ' day ago' : ' days ago');
+    return then.toLocaleDateString();
+  }
+
+  function say(el, msg) {
+    var e = $(el);
+    e.textContent = msg || '';
+    e.hidden = !msg;
+  }
+
+  /* =====================================================================
+     STAGE 1 — propose
+     ===================================================================== */
+
+  function renderYours() {
+    var wrap = $('yourswrap'), ul = $('yours');
+    wrap.hidden = state.added.length === 0;
+    ul.innerHTML = '';
+    state.added.forEach(function (a) {
+      var li = document.createElement('li');
+      li.innerHTML = esc(a.text) +
+        (a.kind === 'seconded' ? ' <span class="tag">— already proposed, so your ' +
+                                 esc(CONFIG.nounSingular) + ' was recorded</span>' : '');
+      ul.appendChild(li);
+    });
+    $('finishhint').textContent = state.added.length
+      ? 'Done? See everyone else’s suggestions.'
+      : '';
+  }
+
+  function remember(text, kind) {
+    state.added.push({ text: text, kind: kind });
+    try { store(ADDED_KEY, JSON.stringify(state.added)); } catch (e) {}
+    renderYours();
+  }
+
+  var pendingText = null;   // proposal awaiting a "yes, mine is different"
+
+  function submit(ev) {
+    ev.preventDefault();
+    if (state.busy) return;
+    var text = $('text').value.replace(/\s+/g, ' ').trim();
+    say('formerror', '');
+    say('said', '');
+    $('dupe').hidden = true;
+
+    if (!text) { say('formerror', 'Write a proposal first.'); return; }
+    if (text.length > state.maxLength) {
+      say('formerror', 'Please keep it to ' + state.maxLength + ' characters.');
+      return;
+    }
+    send(text, false);
+  }
+
+  function send(text, confirmed) {
+    state.busy = true;
+    $('submit').disabled = true;
+    $('submit').textContent = 'Adding…';
+
+    api({ action: 'add', text: text, confirm: confirmed ? '1' : '',
+          name: CONFIG.askForName ? $('name').value : '' })
+      .then(function (d) {
+        if (d.status === 'pending') {
+          pendingText = text;
+          showDupe(d.match);
+          return;
+        }
+        $('text').value = '';
+        $('chars').textContent = '';
+        $('dupe').hidden = true;
+        if (d.status === 'merged') {
+          remember(d.match.text, 'seconded');
+          say('said', '“' + d.match.text + '” had already been proposed, ' +
+                      'so your ' + CONFIG.nounSingular + ' was recorded instead.');
+        } else {
+          remember(d.text, 'added');
+          say('said', 'Added. Propose someone else, or click ' +
+                      CONFIG.completeLabel + '.');
+        }
+      })
+      .catch(function (e) { say('formerror', e.message); })
+      .then(function () {
+        state.busy = false;
+        $('submit').disabled = false;
+        $('submit').textContent = CONFIG.addLabel;
+      });
+  }
+
+  /* The one thing stage 1 reveals: a single close match, so people second the
+     existing entry instead of creating a near-duplicate. */
+  function showDupe(match) {
+    var box = $('dupe');
+    box.hidden = false;
+    box.innerHTML = '';
+
+    var p = document.createElement('p');
+    p.innerHTML = (match.mine
+        ? 'You have already proposed <strong>' + esc(match.text) + '</strong>. ' +
+          'Is this the same person?'
+        : '<strong>' + esc(match.text) + '</strong> has already been proposed. ' +
+          'Is that who you mean?');
+    box.appendChild(p);
+
+    var row = document.createElement('div');
+    row.className = 'row';
+
+    if (!match.mine) {
+      var yes = document.createElement('button');
+      yes.type = 'button';
+      yes.className = 'primary';
+      yes.textContent = match.seconded
+        ? 'Yes — already ' + CONFIG.verbSeconded.toLowerCase()
+        : 'Yes — ' + CONFIG.verbSecond.toLowerCase() + ' that one';
+      yes.onclick = function () {
+        box.hidden = true;
+        if (match.seconded) {
+          $('text').value = '';
+          say('said', 'You have already ' + CONFIG.verbSeconded.toLowerCase() +
+                      ' that proposal.');
+          return;
+        }
+        state.busy = true;
+        api({ action: 'second', id: match.id, quiet: '1' })
+          .then(function () {
+            $('text').value = '';
+            $('chars').textContent = '';
+            remember(match.text, 'seconded');
+            say('said', 'Your ' + CONFIG.nounSingular + ' for “' + match.text +
+                        '” was recorded.');
+          })
+          .catch(function (e) { say('formerror', e.message); })
+          .then(function () { state.busy = false; });
+      };
+      row.appendChild(yes);
+    }
+
+    var no = document.createElement('button');
+    no.type = 'button';
+    no.className = match.mine ? 'primary' : '';
+    no.textContent = 'No — add mine as written';
+    no.onclick = function () { box.hidden = true; send(pendingText, true); };
+    row.appendChild(no);
+
+    box.appendChild(row);
+  }
+
+  /* =====================================================================
+     STAGE 2 — everyone's proposals
+     ===================================================================== */
+
+  var epoch = 0;   // bumped on every write; stale refreshes are discarded
+
+  function apply(data, flashId) {
+    state.proposals = data.proposals || [];
+    state.open = data.open !== false;
+    state.participants = data.participants || 0;
+    if (data.maxLength) state.maxLength = data.maxLength;
+    state.loaded = true;
+    render(flashId);
+  }
+
+  function fail(err) {
+    state.loaded = true;
+    $('status').textContent = err.message;
+    render();
+  }
+
+  function load() {
+    var at = epoch;
+    return api({ action: 'list' }).then(function (d) {
+      if (at !== epoch) return;          // superseded by a click
+      $('status').textContent = '';
+      apply(d);
+    }).catch(function (e) { if (at === epoch) fail(e); });
+  }
+
+  function sorted() {
+    var list = state.proposals.slice();
+    if (state.sort === 'new') {
+      list.sort(function (a, b) { return (b.created || '').localeCompare(a.created || ''); });
+    } else if (state.sort === 'random') {
+      list.forEach(function (p) { if (!(p.id in state.order)) state.order[p.id] = Math.random(); });
+      list.sort(function (a, b) { return state.order[a.id] - state.order[b.id]; });
+    } else {
+      list.sort(function (a, b) {
+        return (b.count - a.count) || (a.created || '').localeCompare(b.created || '');
+      });
+    }
+    return list;
+  }
+
+  function render(flashId) {
+    if (state.stage !== 'review') return;
+    var list = sorted(), ul = $('list');
+    ul.innerHTML = '';
+
+    list.forEach(function (p) {
+      var li = document.createElement('li');
+      if (p.id === flashId) li.className = 'flash';
+
+      var body = document.createElement('div');
+      body.className = 'body';
+      var meta = [];
+      if (p.name) meta.push('proposed by ' + esc(p.name));
+      if (p.created) meta.push(when(p.created));
+      if (p.mine) meta.push('yours');
+      body.innerHTML = '<p class="text">' + esc(p.text) + '</p>' +
+        (meta.length ? '<p class="meta">' + meta.join(' &middot; ') + '</p>' : '');
+
+      // withdraw your own, but only while nobody has seconded it
+      if (p.canWithdraw && state.open) {
+        var m = body.querySelector('.meta');
+        if (!m) {
+          m = document.createElement('p');
+          m.className = 'meta';
+          body.appendChild(m);
+        } else {
+          m.insertAdjacentHTML('beforeend', ' &middot; ');
+        }
+        var w = document.createElement('button');
+        w.type = 'button';
+        w.className = 'linkbtn';
+        w.textContent = 'Withdraw';
+        w.disabled = state.busy;
+        w.onclick = function () { askWithdraw(p, m, w); };
+        m.appendChild(w);
+      }
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'secondbtn' + (p.mine ? ' own' : '');
+      btn.setAttribute('aria-pressed', p.seconded ? 'true' : 'false');
+
+      if (p.mine) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="n">' + p.count + '</span>' +
+                        '<span class="lbl">' + esc(noun(p.count)) + '</span>';
+        btn.title = 'You cannot second your own proposal.';
+        btn.setAttribute('aria-label', 'Your own proposal, ' + p.count + ' ' +
+                         noun(p.count) + '. You cannot second it yourself.');
+      } else {
+        btn.disabled = !state.open || state.busy;
+        btn.innerHTML = '<span class="n">' + p.count + '</span><span class="lbl">' +
+          '<span class="off">' + esc(CONFIG.verbSecond) + '</span>' +
+          '<span class="on">✓ ' + esc(CONFIG.verbSeconded) + '</span>' +
+          '<span class="undo">Undo</span></span>';
+        btn.title = p.seconded
+          ? 'You have seconded this. Click to withdraw your second.'
+          : 'Add your second to this proposal.';
+        btn.setAttribute('aria-label',
+          (p.seconded ? 'Withdraw your second from' : 'Second') + ': ' + p.text +
+          '. Currently ' + p.count + ' ' + noun(p.count) + '.');
+        btn.onclick = function () { toggle(p); };
+      }
+
+      li.appendChild(body);
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+
+    $('empty').hidden = list.length > 0 || !state.loaded;
+
+    var n = list.length;
+    var total = list.reduce(function (s, p) { return s + p.count; }, 0);
+    $('tally').textContent = state.loaded
+      ? n + (n === 1 ? ' proposal' : ' proposals') + ' · ' +
+        total + ' ' + noun(total) + ' from ' +
+        state.participants + (state.participants === 1 ? ' person' : ' people') +
+        (state.open ? '' : ' · closed')
+      : 'Loading…';
+  }
+
+  function toggle(p) {
+    if (state.busy || !state.open) return;
+    state.busy = true;
+    epoch++;
+    p.seconded = !p.seconded;
+    p.count += p.seconded ? 1 : -1;
+    var withdrawn = !p.seconded;
+    render();
+    api({ action: p.seconded ? 'second' : 'unsecond', id: p.id })
+      .then(function (d) {
+        $('status').textContent = withdrawn
+          ? 'Your ' + CONFIG.nounSingular + ' was withdrawn. Click again to put it back.'
+          : '';
+        apply(d);
+      })
+      .catch(fail)
+      .then(function () { state.busy = false; render(); });
+  }
+
+  function askWithdraw(p, meta, trigger) {
+    if (state.busy) return;
+    trigger.hidden = true;
+    var box = document.createElement('span');
+    box.className = 'confirm';
+    var q = document.createElement('span');
+    q.textContent = 'Remove this proposal?';
+    var yes = document.createElement('button');
+    yes.type = 'button';
+    yes.className = 'linkbtn danger';
+    yes.textContent = 'Yes, remove it';
+    yes.onclick = function () { withdraw(p); };
+    var no = document.createElement('button');
+    no.type = 'button';
+    no.className = 'linkbtn';
+    no.textContent = 'Keep it';
+    no.onclick = function () { box.remove(); trigger.hidden = false; };
+    box.appendChild(q); box.appendChild(yes); box.appendChild(no);
+    meta.appendChild(box);
+    yes.focus();
+  }
+
+  function withdraw(p) {
+    if (state.busy || !state.open) return;
+    state.busy = true;
+    epoch++;
+    render();
+    api({ action: 'withdraw', id: p.id })
+      .then(function (d) { $('status').textContent = 'Proposal withdrawn.'; apply(d); })
+      .catch(fail)
+      .then(function () { state.busy = false; render(); });
+  }
+
+  /* =====================================================================
+     Moving between the two stages
+     ===================================================================== */
+
+  function showStage(stage, skipLoad) {
+    state.stage = stage;
+    store(STAGE_KEY, stage);
+    $('stage-propose').hidden = stage !== 'propose';
+    $('stage-review').hidden  = stage !== 'review';
+    $('stage-done').hidden    = stage !== 'done';
+
+    $('intro').textContent =
+      stage === 'propose' ? CONFIG.intro :
+      stage === 'review'  ? 'Second any suggestion you support. You cannot second your own.' :
+                            '';
+
+    if (stage === 'review') {
+      render();
+      if (!skipLoad) load();
+    } else if (stage === 'propose') {
+      renderYours();
+    } else {
+      renderDone();
+    }
+  }
+
+  /* Nothing is held back until the end — every proposal and second is written
+     as it happens. This screen is a clean stopping point, not a save. */
+  function finish() {
+    var proposed = 0, seconded = 0;
+    state.proposals.forEach(function (p) {
+      if (p.mine) proposed++;
+      if (p.seconded) seconded++;
+    });
+    store(SUMMARY_KEY, JSON.stringify({ proposed: proposed, seconded: seconded }));
+    showStage('done');
+    window.scrollTo(0, 0);
+  }
+
+  function renderDone() {
+    $('donemsg').textContent = CONFIG.doneHeading;
+    $('donenote').textContent = CONFIG.doneNote;
+    var sum = null;
+    try { sum = JSON.parse(stored(SUMMARY_KEY, 'null')); } catch (e) {}
+    if (sum && (sum.proposed || sum.seconded)) {
+      var bits = [];
+      if (sum.proposed) {
+        bits.push('proposed ' + sum.proposed +
+                  (sum.proposed === 1 ? ' suggestion' : ' suggestions'));
+      }
+      if (sum.seconded) {
+        bits.push(CONFIG.verbSeconded.toLowerCase() + ' ' + sum.seconded +
+                  (sum.seconded === 1 ? ' other' : ' others'));
+      }
+      $('donesummary').textContent = 'You ' + bits.join(' and ') + '.';
+      $('donesummary').hidden = false;
+    } else {
+      $('donesummary').hidden = true;
+    }
+  }
+
+  function complete() {
+    var typed = $('text').value.trim();
+    if (typed) {
+      say('formerror', 'You have a proposal in the box that has not been added. ' +
+                       'Click ' + CONFIG.addLabel + ' first, or clear the box.');
+      $('text').focus();
+      return;
+    }
+    say('formerror', '');
+    say('said', '');
+    showStage('review');
+  }
+
+  /* ------------------------------------------------------------------ init */
+  $('heading').textContent = CONFIG.heading;
+  document.title = CONFIG.heading;
+  $('question').textContent = CONFIG.question;
+  $('footer').textContent = CONFIG.footnote || '';
+  $('text').placeholder = CONFIG.placeholder;
+  $('submit').textContent = CONFIG.addLabel;
+  $('complete').textContent = CONFIG.completeLabel;
+  $('finish').textContent = CONFIG.finishLabel;
+  $('namefield').hidden = !CONFIG.askForName;
+
+  var savedName = stored(NAME_KEY, '');
+  if (savedName) $('name').value = savedName;
+  $('name').addEventListener('input', function () { store(NAME_KEY, this.value); });
+
+  try { state.added = JSON.parse(stored(ADDED_KEY, '[]')) || []; } catch (e) { state.added = []; }
+
+  $('addform').addEventListener('submit', submit);
+  $('complete').addEventListener('click', complete);
+  $('back').addEventListener('click', function () { showStage('propose'); });
+  $('finish').addEventListener('click', finish);
+  $('reopen').addEventListener('click', function () { showStage('review'); });
+
+  $('text').addEventListener('input', function () {
+    var n = this.value.trim().length;
+    var el = $('chars');
+    el.textContent = n ? (state.maxLength - n) + ' characters left' : '';
+    el.className = 'count' + (n > state.maxLength ? ' over' : '');
+    $('dupe').hidden = true;
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.sorts button'), function (b) {
+    b.setAttribute('aria-pressed', b.dataset.sort === state.sort ? 'true' : 'false');
+    b.onclick = function () {
+      state.sort = b.dataset.sort;
+      if (state.sort === 'random') state.order = {};
+      Array.prototype.forEach.call(document.querySelectorAll('.sorts button'), function (o) {
+        o.setAttribute('aria-pressed', o.dataset.sort === state.sort ? 'true' : 'false');
+      });
+      render();
+    };
+  });
+
+  var resume = stored(STAGE_KEY, 'propose');
+  showStage(resume === 'review' || resume === 'done' ? resume : 'propose');
+
+  if (CONFIG.refreshSeconds > 0) {
+    setInterval(function () {
+      if (state.stage === 'review' && !state.busy && !document.hidden) load();
+    }, CONFIG.refreshSeconds * 1000);
+    document.addEventListener('visibilitychange', function () {
+      if (state.stage === 'review' && !document.hidden && !state.busy) load();
+    });
+  }
+})();
+</script>
+</body>
+</html>
