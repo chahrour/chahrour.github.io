@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECON 6130 · Macroeconomics I · Fall 2026</title>
+<style>
+:root{
+  --bg:#EEF1F6; --surface:#FFFFFF; --surface-2:#E4E9F1;
+  --text:#12161D; --muted:#4E586B; --border:#D2DAE6;
+  --accent:#C01527; --accent-ink:#9C0F1F;
+  --shadow:0 1px 2px rgba(20,30,50,.05),0 10px 26px -18px rgba(20,30,50,.28);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --c-ip:#5B6577; --c-on:#0E7C86; --c-ac:#B45309; --c-bf:#5B61C4;
+  --c-pr:#C01527; --c-qz:#7C3AED; --c-rv:#15803D; --c-nc:#8792A5;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0E1116; --surface:#171C24; --surface-2:#1F2530;
+    --text:#EAEEF5; --muted:#9BA7BA; --border:#2B333F;
+    --accent:#F16A72; --accent-ink:#FF8B92;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 12px 30px -18px rgba(0,0,0,.75);
+    --c-ip:#8B97AB; --c-on:#37B3BD; --c-ac:#E0913A; --c-bf:#9BA0F0;
+    --c-pr:#F16A72; --c-qz:#B69AF0; --c-rv:#5FC57F; --c-nc:#8792A5;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#EEF1F6; --surface:#FFFFFF; --surface-2:#E4E9F1;
+  --text:#12161D; --muted:#4E586B; --border:#D2DAE6;
+  --accent:#C01527; --accent-ink:#9C0F1F;
+  --shadow:0 1px 2px rgba(20,30,50,.05),0 10px 26px -18px rgba(20,30,50,.28);
+  --c-ip:#5B6577; --c-on:#0E7C86; --c-ac:#B45309; --c-bf:#5B61C4;
+  --c-pr:#C01527; --c-qz:#7C3AED; --c-rv:#15803D; --c-nc:#8792A5;
+}
+:root[data-theme="dark"]{
+  --bg:#0E1116; --surface:#171C24; --surface-2:#1F2530;
+  --text:#EAEEF5; --muted:#9BA7BA; --border:#2B333F;
+  --accent:#F16A72; --accent-ink:#FF8B92;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 12px 30px -18px rgba(0,0,0,.75);
+  --c-ip:#8B97AB; --c-on:#37B3BD; --c-ac:#E0913A; --c-bf:#9BA0F0;
+  --c-pr:#F16A72; --c-qz:#B69AF0; --c-rv:#5FC57F; --c-nc:#8792A5;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--sans);line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:72rem;margin:0 auto;padding:clamp(1.25rem,4vw,3rem) clamp(1rem,4vw,2rem)}
+
+/* header */
+.masthead{border-bottom:2px solid var(--accent);padding-bottom:1.4rem;margin-bottom:1.8rem}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent-ink);margin:0 0 .5rem}
+.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,5vw,2.9rem);
+  line-height:1.05;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.meta{margin:.85rem 0 0;color:var(--muted);font-size:.95rem}
+.meta b{color:var(--text);font-weight:600}
+.meta .dot{margin:0 .5rem;opacity:.5}
+.meta a{color:var(--accent-ink);text-decoration:underline;
+  text-underline-offset:2px;text-decoration-thickness:1px}
+.meta a:hover{text-decoration-thickness:2px}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.4rem 0 0}
+.legend-item{display:inline-flex}
+
+.edition-note{margin:.9rem 0 0;font-size:.85rem;color:var(--muted);line-height:1.5}
+.edition-note b{color:var(--text)}
+.edition-note a{color:var(--accent-ink);text-decoration:underline;
+  text-underline-offset:2px;text-decoration-thickness:1px}
+.edition-note a:hover{text-decoration-thickness:2px}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);
+  font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  padding:.2rem .5rem;border-radius:999px;white-space:nowrap;
+  color:var(--_c,var(--c-ip));
+  background:color-mix(in srgb,var(--_c,var(--c-ip)) 12%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--_c,var(--c-ip)) 40%,transparent)}
+.badge--ip{--_c:var(--c-ip)} .badge--on{--_c:var(--c-on)}
+.badge--ac{--_c:var(--c-ac)} .badge--bf{--_c:var(--c-bf)}
+.badge--pr{--_c:var(--c-pr)} .badge--qz{--_c:var(--c-qz)}
+.badge--rv{--_c:var(--c-rv)} .badge--nc{--_c:var(--c-nc)}
+
+/* weeks */
+.week{margin-top:2rem}
+.week-head{display:flex;align-items:baseline;gap:.7rem;
+  padding-bottom:.5rem;margin-bottom:.85rem;border-bottom:1px solid var(--border)}
+.week-no{font-family:var(--serif);font-weight:600;font-size:1.15rem}
+.week-span{font-family:var(--mono);font-size:.8rem;color:var(--muted);letter-spacing:.03em}
+/* Mon / Wed lectures side by side on wide screens; Friday section on its own row below */
+.week-body{display:grid;grid-template-columns:1fr;gap:.8rem;align-items:start}
+@media (min-width:46rem){.week-body{grid-template-columns:1fr 1fr;gap:.9rem}}
+.week-sections{display:grid;grid-template-columns:1fr;gap:.8rem;margin-top:.8rem}
+@media (min-width:46rem){.week-sections{grid-template-columns:1fr 1fr;gap:.9rem}}
+
+/* discussion section: one-column teal card */
+.s--on{background:color-mix(in srgb,var(--c-on) 7%,var(--surface));
+  border-color:color-mix(in srgb,var(--c-on) 30%,var(--border));
+  border-left-width:5px;box-shadow:none}
+.s--on .s-topic{color:var(--c-on);font-size:1rem}
+
+/* session card */
+.session{display:grid;grid-template-columns:5rem 1fr;gap:.9rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:.9rem 1.05rem;box-shadow:var(--shadow);
+  border-left:3px solid var(--_edge,var(--c-ip))}
+.s--ip{--_edge:var(--c-ip)} .s--on{--_edge:var(--c-on)} .s--ac{--_edge:var(--c-ac)}
+.s--bf{--_edge:var(--c-bf)} .s--pr{--_edge:var(--c-pr)} .s--qz{--_edge:var(--c-qz)}
+.s--rv{--_edge:var(--c-rv)} .s--nc{--_edge:var(--c-nc)}
+
+/* structural rows keep their tint/emphasis but flow as normal column entries */
+.s--pr{background:color-mix(in srgb,var(--c-pr) 7%,var(--surface));
+  border-color:color-mix(in srgb,var(--c-pr) 30%,var(--border))}
+.s--pr .s-topic{color:var(--accent-ink)}
+.s--rv{background:color-mix(in srgb,var(--c-rv) 8%,var(--surface));
+  border-color:color-mix(in srgb,var(--c-rv) 28%,var(--border))}
+/* next upcoming session -- class added at load time by the script at the
+   foot of the page, based on the reader's own clock */
+.session--next{--_edge:var(--accent);
+  background:color-mix(in srgb,var(--accent) 6%,var(--surface));
+  border-color:color-mix(in srgb,var(--accent) 34%,var(--border));
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 20%,transparent),var(--shadow)}
+.next-flag{display:inline-block;width:fit-content;margin-top:.25rem;
+  font-family:var(--mono);font-size:.6rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;padding:.14rem .34rem;border-radius:4px;
+  color:#fff;background:var(--accent)}
+@media (prefers-reduced-motion:no-preference){
+  .session--next{scroll-margin-top:1.5rem}
+}
+
+.session--break{background:var(--surface-2);box-shadow:none;border-style:dashed}
+.session--break .s-topic{font-style:italic;color:var(--muted);font-weight:500}
+
+.s-date{display:flex;flex-direction:column;gap:.1rem;padding-top:.1rem;
+  border-right:1px solid var(--border)}
+.s-dow{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--muted)}
+.s-day{font-family:var(--serif);font-size:1.15rem;font-weight:600;
+  font-variant-numeric:tabular-nums}
+.s-num{font-family:var(--mono);font-size:.66rem;color:var(--muted);margin-top:.15rem}
+
+.s-body{min-width:0}
+.s-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.s-topic{font-family:var(--serif);font-size:1.1rem;font-weight:600;line-height:1.25;
+  margin:.05rem 0 0;text-wrap:balance}
+.s-readings{margin:.55rem 0 0;padding:0;list-style:none;
+  display:flex;flex-direction:column;gap:.25rem}
+.s-readings li{position:relative;padding-left:1.05rem;font-size:.9rem;color:var(--text)}
+.s-readings li::before{content:"";position:absolute;left:.15rem;top:.6em;
+  width:.32rem;height:.32rem;border-radius:50%;background:var(--muted);opacity:.6}
+/* due dates -- high prominence: solid accent flag */
+.s-due{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.7rem}
+.due-chip{display:inline-flex;align-items:center;gap:.4rem;
+  font-family:var(--sans);font-size:.8rem;font-weight:700;letter-spacing:.01em;
+  padding:.3rem .6rem .3rem .55rem;border-radius:7px;
+  color:#fff;background:var(--accent);
+  box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.due-chip::before{content:"DUE";font-family:var(--mono);font-size:.62rem;font-weight:700;
+  letter-spacing:.08em;padding:.12rem .34rem;border-radius:4px;
+  background:rgba(255,255,255,.22)}
+.s-note{margin:.6rem 0 0;font-size:.82rem;color:var(--muted);font-style:italic}
+
+footer{margin-top:2.5rem;padding-top:1.2rem;border-top:1px solid var(--border);
+  color:var(--muted);font-size:.82rem;display:flex;flex-wrap:wrap;gap:.4rem;justify-content:space-between}
+
+@media (max-width:32rem){
+  .session{grid-template-columns:1fr;gap:.55rem}
+  .s-date{flex-direction:row;align-items:baseline;gap:.5rem;
+    border-right:none;border-bottom:1px solid var(--border);padding-bottom:.4rem}
+  .s-num{margin-top:0;margin-left:auto}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <p class="eyebrow">ECON 6130 · Fall 2026</p>
+  <h1 class="title">Macroeconomics I <span style="font-weight:400">(second half)</span></h1>
+  <p class="meta"><b>Lectures Mon &amp; Wed</b> · 10:10–11:25 AM · Ives 111<span class="dot">·</span>
+  <b>Section Fri</b> · 8:40–9:55 AM · Goldwin Smith 142<br>
+  Prof. Ryan Chahrour<span class="dot">·</span>13 lectures<span class="dot">·</span>
+  <a href="ECON6130_syllabus.pdf">Syllabus (PDF)</a></p>
+  <div class="legend"><div class="legend-item"><span class="badge badge--ip">Lecture</span></div><div class="legend-item"><span class="badge badge--on">Section</span></div><div class="legend-item"><span class="badge badge--pr">Final exam</span></div><div class="legend-item"><span class="badge badge--nc">No class</span></div></div>
+  <p class="edition-note">Problem sets are due <b>before class</b> on the date shown.</p>
+</header>
+<main>
+<section class="week">
+<div class="week-head"><span class="week-no">Week 1</span><span class="week-span">Oct&nbsp;19 – 23</span></div>
+<div class="week-body">
+<article class="session s--ip" data-date="2026-10-19" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Mon</span><span class="s-day">Oct&nbsp;19</span><span class="s-num">Lecture 1</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Introduction &amp; the Labor Search Model</h3><span class="badge badge--ip">Lecture</span></div><ul class="s-readings"><li>Model setup through the steady state</li></ul></div></article>
+<article class="session s--ip" data-date="2026-10-21" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Wed</span><span class="s-day">Oct&nbsp;21</span><span class="s-num">Lecture 2</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Search Model, continued; Linearization</h3><span class="badge badge--ip">Lecture</span></div></div></article>
+</div>
+<div class="week-sections">
+<article class="session s--on" data-date="2026-10-23" data-type="section" data-end="09:55"><div class="s-date"><span class="s-dow">Fri</span><span class="s-day">Oct&nbsp;23</span><span class="s-num">Section 1</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Discussion Section</h3><span class="badge badge--on">Section</span></div><ul class="s-readings"><li>Intuition for the vacancy-posting Euler equation</li><li>Model steady state</li><li>RBC equilibrium derivations</li></ul></div></article>
+</div>
+</section>
+<section class="week">
+<div class="week-head"><span class="week-no">Week 2</span><span class="week-span">Oct&nbsp;26 – 30</span></div>
+<div class="week-body">
+<article class="session s--ip" data-date="2026-10-26" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Mon</span><span class="s-day">Oct&nbsp;26</span><span class="s-num">Lecture 3</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Linearization &amp; Impulse Responses</h3><span class="badge badge--ip">Lecture</span></div><ul class="s-readings"><li>Code walkthrough</li></ul></div></article>
+<article class="session s--ip" data-date="2026-10-28" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Wed</span><span class="s-day">Oct&nbsp;28</span><span class="s-num">Lecture 4</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Calibration &amp; Loss-Function Estimation; the Shooting Method</h3><span class="badge badge--ip">Lecture</span></div><ul class="s-readings"><li>Shooting method in the RBC model</li></ul></div></article>
+</div>
+<div class="week-sections">
+<article class="session s--on" data-date="2026-10-30" data-type="section" data-end="09:55"><div class="s-date"><span class="s-dow">Fri</span><span class="s-day">Oct&nbsp;30</span><span class="s-num">Section 2</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Discussion Section</h3><span class="badge badge--on">Section</span></div><ul class="s-readings"><li>Questions on linearization and impulse responses</li><li>Linearizing equations by hand</li></ul></div></article>
+</div>
+</section>
+<section class="week">
+<div class="week-head"><span class="week-no">Week 3</span><span class="week-span">Nov&nbsp;2 – 6</span></div>
+<div class="week-body">
+<article class="session s--ip" data-date="2026-11-02" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Mon</span><span class="s-day">Nov&nbsp;2</span><span class="s-num">Lecture 5</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">The Decentralized Economy &amp; Nash-Bargained Wages</h3><span class="badge badge--ip">Lecture</span></div><div class="s-due"><span class="due-chip">Problem Set 1 — Linearization</span></div></div></article>
+<article class="session s--ip" data-date="2026-11-04" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Wed</span><span class="s-day">Nov&nbsp;4</span><span class="s-num">Lecture 6</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Nash Bargaining, continued; the Hosios Condition</h3><span class="badge badge--ip">Lecture</span></div></div></article>
+</div>
+<div class="week-sections">
+<article class="session s--on" data-date="2026-11-06" data-type="section" data-end="09:55"><div class="s-date"><span class="s-dow">Fri</span><span class="s-day">Nov&nbsp;6</span><span class="s-num">Section 3</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Discussion Section</h3><span class="badge badge--on">Section</span></div><ul class="s-readings"><li>Hosios condition review</li><li>PS1: brief quiz</li></ul></div></article>
+</div>
+</section>
+<section class="week">
+<div class="week-head"><span class="week-no">Week 4</span><span class="week-span">Nov&nbsp;9 – 13</span></div>
+<div class="week-body">
+<article class="session s--ip" data-date="2026-11-09" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Mon</span><span class="s-day">Nov&nbsp;9</span><span class="s-num">Lecture 7</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Value Function Iteration</h3><span class="badge badge--ip">Lecture</span></div><ul class="s-readings"><li>Tricks of the trade</li></ul><div class="s-due"><span class="due-chip">Problem Set 2 — Shooting method</span></div></div></article>
+<article class="session s--ip" data-date="2026-11-11" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Wed</span><span class="s-day">Nov&nbsp;11</span><span class="s-num">Lecture 8</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Function Approximation</h3><span class="badge badge--ip">Lecture</span></div></div></article>
+</div>
+<div class="week-sections">
+<article class="session s--on" data-date="2026-11-13" data-type="section" data-end="09:55"><div class="s-date"><span class="s-dow">Fri</span><span class="s-day">Nov&nbsp;13</span><span class="s-num">Section 4</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Discussion Section</h3><span class="badge badge--on">Section</span></div><ul class="s-readings"><li>Function approximation review</li><li>PS2: brief quiz</li></ul></div></article>
+</div>
+</section>
+<section class="week">
+<div class="week-head"><span class="week-no">Week 5</span><span class="week-span">Nov&nbsp;16 – 20</span></div>
+<div class="week-body">
+<article class="session s--ip" data-date="2026-11-16" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Mon</span><span class="s-day">Nov&nbsp;16</span><span class="s-num">Lecture 9</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">The Policy Function Approach</h3><span class="badge badge--ip">Lecture</span></div><div class="s-due"><span class="due-chip">Problem Set 3 — Value function iteration</span></div></div></article>
+<article class="session s--ip" data-date="2026-11-18" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Wed</span><span class="s-day">Nov&nbsp;18</span><span class="s-num">Lecture 10</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">The Policy Function Approach, continued</h3><span class="badge badge--ip">Lecture</span></div><ul class="s-readings"><li>Code walkthrough</li></ul></div></article>
+</div>
+<div class="week-sections">
+<article class="session s--on" data-date="2026-11-20" data-type="section" data-end="09:55"><div class="s-date"><span class="s-dow">Fri</span><span class="s-day">Nov&nbsp;20</span><span class="s-num">Section 5</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Discussion Section</h3><span class="badge badge--on">Section</span></div><ul class="s-readings"><li>Policy function review</li><li>PS3: brief quiz</li></ul></div></article>
+</div>
+</section>
+<section class="week">
+<div class="week-head"><span class="week-no">Week 6</span><span class="week-span">Nov&nbsp;23 – 27</span></div>
+<div class="week-body">
+<article class="session s--ip" data-date="2026-11-23" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Mon</span><span class="s-day">Nov&nbsp;23</span><span class="s-num">Lecture 11</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">A History of News Shocks in Macroeconomics</h3><span class="badge badge--ip">Lecture</span></div></div></article>
+<article class="session s--nc session--break" data-date="2026-11-25" data-type="noclass" data-end="23:59"><div class="s-date"><span class="s-dow">Wed</span><span class="s-day">Nov&nbsp;25</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Thanksgiving Break — no class</h3><span class="badge badge--nc">No class</span></div></div></article>
+</div>
+<div class="week-sections">
+<article class="session s--nc session--break" data-date="2026-11-27" data-type="noclass" data-end="23:59"><div class="s-date"><span class="s-dow">Fri</span><span class="s-day">Nov&nbsp;27</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Thanksgiving Break — no section</h3><span class="badge badge--nc">No class</span></div></div></article>
+</div>
+</section>
+<section class="week">
+<div class="week-head"><span class="week-no">Week 7</span><span class="week-span">Nov&nbsp;30 – Dec&nbsp;4</span></div>
+<div class="week-body">
+<article class="session s--ip" data-date="2026-11-30" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Mon</span><span class="s-day">Nov&nbsp;30</span><span class="s-num">Lecture 12</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Open Topic</h3><span class="badge badge--ip">Lecture</span></div><div class="s-due"><span class="due-chip">Problem Set 4 — Projection method</span></div></div></article>
+<article class="session s--ip" data-date="2026-12-02" data-type="lecture" data-end="11:25"><div class="s-date"><span class="s-dow">Wed</span><span class="s-day">Dec&nbsp;2</span><span class="s-num">Lecture 13</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Open Topic</h3><span class="badge badge--ip">Lecture</span></div></div></article>
+</div>
+<div class="week-sections">
+<article class="session s--on" data-date="2026-12-04" data-type="section" data-end="09:55"><div class="s-date"><span class="s-dow">Fri</span><span class="s-day">Dec&nbsp;4</span><span class="s-num">Section 6</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Discussion Section</h3><span class="badge badge--on">Section</span></div><ul class="s-readings"><li>PS4: brief quiz</li><li>Review questions</li></ul></div></article>
+</div>
+</section>
+<section class="week">
+<div class="week-head"><span class="week-no">Week 8</span><span class="week-span">Dec&nbsp;7</span></div>
+<div class="week-body">
+<article class="session s--pr" data-date="2026-12-07" data-type="final" data-end="23:59"><div class="s-date"><span class="s-dow">Mon</span><span class="s-day">Dec&nbsp;7</span></div><div class="s-body"><div class="s-head"><h3 class="s-topic">Final Exam</h3><span class="badge badge--pr">Final exam</span></div><p class="s-note">In class.</p></div></article>
+</div>
+</section>
+</main>
+<footer>
+  <span>Course schedule · sequence and dates subject to change.</span>
+  <span>Updated October 14, 2026</span>
+</footer>
+</div>
+
+<script>
+(function () {
+  // Highlight the next class meeting, using the reader's local clock.
+  // Today's session stays highlighted until it ends (data-end), then we
+  // move on to the next one.  Breaks are skipped; after the last dated
+  // session we fall through to the final-exam card.
+
+  var t = new Date();
+  var today = t.getFullYear() + "-" +
+              String(t.getMonth() + 1).padStart(2, "0") + "-" +
+              String(t.getDate()).padStart(2, "0");
+  var now = String(t.getHours()).padStart(2, "0") + ":" +
+            String(t.getMinutes()).padStart(2, "0");
+
+  var cards = Array.prototype.slice.call(
+    document.querySelectorAll("article.session[data-date]"));
+
+  var next = cards.find(function (el) {
+    if (el.dataset.type === "noclass" || !el.dataset.date) return false;
+    if (el.dataset.date > today) return true;
+    return el.dataset.date === today && now < el.dataset.end;
+  }) || document.querySelector('article.session[data-type="final"]');
+
+  if (!next) return;
+  next.classList.add("session--next");
+
+  var rail = next.querySelector(".s-date");
+  if (rail) {
+    var flag = document.createElement("span");
+    flag.className = "next-flag";
+    flag.textContent = "Next class";
+    rail.appendChild(flag);
+  }
+  if (location.hash === "") {
+    next.scrollIntoView({block: "center", behavior: "instant"});
+  }
+})();
+</script>
+</body>
+</html>
