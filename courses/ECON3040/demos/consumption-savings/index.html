@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Consumption–Savings in 3-D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: an instrument panel, like the MATLAB demo. Top row: 3-D and 2-D figures, same height. Below: stage + controls | readout + layers. */
+:root {
+  --bg: #eef1f4;  --panel: #ffffff;  --ink: #17202a;  --muted: #56616d;  --line: #d5dbe1;
+  --budget: #1d4ed8;  --budget-soft: rgba(29,78,216,.16);  --opt: #c8322a;  --chip: #e5eaf0;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1318; --panel: #151c23; --ink: #e4e9ee; --muted: #98a3ae; --line: #2a343e;
+  --budget: #7096ff; --budget-soft: rgba(112,150,255,.2); --opt: #ff6a5c; --chip: #1f2831; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1318; --panel: #151c23; --ink: #e4e9ee; --muted: #98a3ae; --line: #2a343e;
+  --budget: #7096ff; --budget-soft: rgba(112,150,255,.2); --opt: #ff6a5c; --chip: #1f2831; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 28px }
+.wrap { max-width: 1280px; margin: 0 auto; display: grid; gap: 16px }
+header { display: grid; gap: 4px }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+h1 { font: 600 clamp(26px, 3.2vw, 36px)/1.1 var(--display); margin: 0; text-wrap: balance }
+.problem { color: var(--muted); margin: 0; max-width: 70ch }
+.problem i, .cap i { font-family: var(--body); font-style: italic }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); grid-template-areas: "fig3 fig2" "left right"; gap: 16px }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px }
+.stage3d { grid-area: fig3; display: flex; flex-direction: column; min-width: 0 }
+#plot3d { flex: 1; width: 100%; min-height: 420px }
+.two { grid-area: fig2 }
+.col { display: grid; gap: 16px; align-content: start; min-width: 0 }
+.colL { grid-area: left }  .colR { grid-area: right }
+.controls { padding: 14px 16px; display: grid; gap: 12px }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+
+.lesson { padding: 16px; display: grid; gap: 10px }
+.lesson .num { font: 500 12px/1 var(--mono); color: var(--muted); letter-spacing: .06em }
+.lesson h2 { font: 600 22px/1.15 var(--display); margin: 0; text-wrap: balance }
+.cap { margin: 0; min-height: 3em; max-width: 75ch }
+.nav { display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
+.dots { display: flex; gap: 5px; margin-left: auto }
+.dot { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel);
+  color: var(--muted); font: 500 12px/1 var(--mono); cursor: pointer; padding: 0 }
+.dot[aria-current="step"] { background: var(--budget); border-color: var(--budget); color: #fff }
+
+button.btn { font: 500 14px/1 var(--body); color: var(--ink); background: var(--chip); border: 1px solid var(--line);
+  border-radius: 7px; padding: 9px 13px; cursor: pointer }
+button.btn.primary { background: var(--budget); border-color: var(--budget); color: #fff }
+button.btn.stop { color: var(--opt) }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--budget); outline-offset: 2px }
+button:disabled { opacity: .45; cursor: default }
+.sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px }
+
+.rbox { padding: 14px 16px; display: grid; gap: 10px }
+.rrow { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center }
+.rrow label { font-weight: 600 }
+input[type=range] { width: 100%; accent-color: var(--budget) }
+.rval { font: 500 16px/1 var(--mono); min-width: 3.2em; text-align: right }
+.readout { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; font-variant-numeric: tabular-nums }
+.readout div { display: grid; gap: 2px }
+.readout span { font: 500 11px/1 var(--mono); color: var(--muted); letter-spacing: .05em }
+.readout b { font: 500 17px/1.2 var(--mono) }
+.pill { justify-self: start; font: 500 12px/1 var(--mono); padding: 5px 9px; border-radius: 99px; background: var(--chip); color: var(--ink) }
+.pill.saver { background: var(--budget-soft); color: var(--budget) }
+.pill.borrower { background: color-mix(in srgb, var(--opt) 18%, transparent); color: var(--opt) }
+
+#plot2d { width: 100%; aspect-ratio: 1 / 1; max-width: 100% }
+.two { padding: 10px 10px 4px }
+.two .lbl { font: 500 12px/1 var(--mono); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; padding: 4px 6px 0 }
+
+.layers { padding: 12px 16px; display: grid; gap: 8px }
+.layers .lbl { font: 500 12px/1 var(--mono); color: var(--muted); letter-spacing: .06em; text-transform: uppercase }
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+.chip { font: 13px/1 var(--body); padding: 7px 10px; border-radius: 99px; border: 1px solid var(--line);
+  background: transparent; color: var(--muted); cursor: pointer }
+.chip[aria-pressed="true"] { background: var(--chip); color: var(--ink); border-color: var(--muted) }
+.chip.follow[aria-pressed="true"] { border-color: var(--budget); color: var(--budget) }
+.hint { font-size: 13px; color: var(--muted); margin: 0 }
+
+@media (max-width: 860px) {
+  .grid { grid-template-columns: minmax(0,1fr); grid-template-areas: "fig3" "left" "fig2" "right" }
+  #plot3d { flex: none; height: 62vh; min-height: 340px }
+  .dots { margin-left: 0 }
+}
+body { margin: 0 }  .dl { padding: 14px 16px; display: grid; gap: 4px }
+.dl p { margin: 0 }  .dl a { color: var(--budget) }  .dl code { font: 13px var(--mono) }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">ECON 3040 · Consumer theory · Interactive</div>
+    <h1>Consumption–Savings in 3-D</h1>
+    <p class="problem">Choose consumption today and tomorrow to maximize <i>u</i> = ½ log <i>C</i><sub>1</sub> + ½ log <i>C</i><sub>2</sub>
+      subject to <i>C</i><sub>1</sub> + <i>C</i><sub>2</sub>/<i>r</i> = <i>Y</i><sub>1</sub> + <i>Y</i><sub>2</sub>/<i>r</i>,
+      with income <i>Y</i><sub>1</sub> = 1.5 today, <i>Y</i><sub>2</sub> = 0.5 tomorrow, and gross real interest rate <i>r</i>.</p>
+  </header>
+
+  <div class="grid">
+    <section class="card stage3d" aria-label="3-D picture"><div id="plot3d"></div></section>
+
+    <section class="card two" aria-label="2-D picture">
+      <div class="lbl">The usual 2-D picture</div>
+      <div id="plot2d"></div>
+    </section>
+
+    <div class="col colL">
+      <section class="card lesson" aria-live="polite">
+        <div class="num" id="num">STAGE 1 OF 8</div>
+        <h2 id="stTitle"></h2>
+        <p class="cap" id="stCap"></p>
+        <div class="nav">
+          <button class="btn" id="bBack">◀ Back</button>
+          <button class="btn primary" id="bNext">Next ▶</button>
+          <div class="dots" id="dots"></div>
+        </div>
+      </section>
+      <section class="card controls" aria-label="Controls">
+        <div class="rrow">
+          <label for="r">Interest rate <i>r</i></label>
+          <input type="range" id="r" min="0.25" max="2" step="0.01" value="1">
+          <span class="rval" id="rval">1.00</span>
+        </div>
+        <div class="toolbar">
+          <button class="btn" id="bWall">Look at the wall</button>
+          <button class="btn" id="bSpin">Spin</button>
+          <button class="btn" id="bSweep">Sweep r</button>
+          <button class="btn stop" id="bStop">Stop</button>
+          <span class="sep" aria-hidden="true"></span>
+          <p class="hint">Drag the 3-D picture to rotate · scroll or pinch to zoom</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col colR">
+      <section class="card rbox" aria-label="Optimum">
+        <div class="readout">
+          <div><span>C₁*</span><b id="o1">–</b></div>
+          <div><span>C₂*</span><b id="o2">–</b></div>
+          <div><span>S* = Y₁ − C₁*</span><b id="oS">–</b></div>
+          <div><span>u*</span><b id="oU">–</b></div>
+        </div>
+        <span class="pill" id="pill">Saver</span>
+      </section>
+      <section class="card layers" aria-label="Layers">
+        <div class="lbl">Show</div>
+        <div class="chips" id="chips"></div>
+        <div class="chips"><button class="chip follow" id="follow" aria-pressed="false">Keep facing the wall as r changes</button></div>
+      </section>
+    </div>
+  </div>
+  <footer class="card dl">
+    <p><b>Prefer MATLAB?</b> Download <a href="consumption_savings_3d.m" download>consumption_savings_3d.m</a>
+      (MATLAB R2022a or later). Save it, open MATLAB in that folder, and type <code>consumption_savings_3d</code>.</p>
+    <p class="hint">ECON 3040, Cornell University · <a href="../../">Course schedule</a></p>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script>
+(() => {
+  // ---------- model ----------
+  const Y1 = 1.5, Y2 = 0.5, CMAX = 3.6, ZMIN = -2.5, ZMAX = 1.5, RHO = 2.1, BOX = 1.25;   // BOX scales the drawn 3-D box (bigger = more zoomed in)
+  const u = (a, b) => 0.5 * Math.log(a) + 0.5 * Math.log(b);
+  const N = 84;
+  const g = Array.from({ length: N }, (_, i) => CMAX * Math.pow(0.07 + 0.93 * i / (N - 1), 1.6)); // denser near the axes
+  const U = g.map(c2 => g.map(c1 => { const z = u(c1, c2); return z < ZMIN ? null : z; }));
+  const LEVELS = []; for (let k = -2; k <= 1.251; k += 0.25) LEVELS.push(+k.toFixed(2));
+  const fine = Array.from({ length: 260 }, (_, i) => 0.02 + (CMAX - 0.02) * i / 259);
+
+  const optimum = r => { const b1 = Y1 + Y2 / r, c1 = b1 / 2, c2 = r * c1; return { b1, b2: r * Y1 + Y2, c1, c2, S: Y1 - c1, u: u(c1, c2) }; };
+  function icCurve(level, zval, lo = 0.02) {  // indifference curve u = level:  C2 = e^{2 level} / C1
+    const x = [], y = [], z = [];
+    for (const c1 of fine) { const c2 = Math.exp(2 * level) / c1; if (c1 >= lo && c2 <= CMAX && c2 >= lo) { x.push(c1); y.push(c2); z.push(zval); } }
+    return { x, y, z };
+  }
+  function joined(zOf, lo) {                 // all level sets in one trace, broken by nulls
+    const x = [], y = [], z = [];
+    for (const k of LEVELS) { const c = icCurve(k, zOf(k), lo); x.push(...c.x, null); y.push(...c.y, null); z.push(...c.z, null); }
+    return { x, y, z };
+  }
+  const LEV_S = joined(k => k + 0.01, g[0]), LEV_F = joined(() => ZMIN, g[0]), LEV_2D = joined(() => 0);   // stay on the drawn surface
+
+  // ---------- state ----------
+  const STAGES = [
+    ["The budget set", "Every bundle (C₁, C₂) this consumer can afford. The blue line is the budget constraint. It passes through the endowment: eat your income in each period, never saving or borrowing."],
+    ["Twist it: the budget line is a wall", "Add a third axis for utility and tilt the picture. Seen from the side, the budget line is a wall standing on the floor. Choices must sit on or inside it."],
+    ["The utility function", "The height of the hill is utility, ½ log C₁ + ½ log C₂. More of either good is higher, but each extra unit adds less, so the hill flattens as you climb."],
+    ["Level sets are indifference curves", "Slice the hill at one height: every bundle on that slice gives the same utility. Drop the slices to the floor and you have the indifference curves of the 2-D picture."],
+    ["Put them together", "Stand the budget wall in the hill. The faded part of the hill is beyond the wall: bundles the consumer would like but cannot afford."],
+    ["The constrained maximum", "The red curve is utility along the budget line. Its peak is the best affordable bundle. The indifference curve at that height just touches the budget line: tangency."],
+    ["Look straight at the wall", "Face the wall head-on. Utility along the budget line is a hump with a single peak. That peak is the optimum (C₁*, C₂*)."],
+    ["Change the interest rate", "Move r. The budget line pivots around the endowment: a higher r makes saving pay more and the line steeper. Watch C₁*, C₂* and saving respond."]
+  ];
+  //            budget surf out  levS levF wall opt
+  const VIS = [ [1, 0, 0, 0, 0, 1, 0], [1, 0, 0, 0, 0, 1, 0], [0, 1, 1, 1, 0, 0, 0], [0, 1, 1, 1, 1, 0, 0],
+                [1, 1, 1, 1, 0, 1, 0], [1, 1, 1, 0, 0, 1, 1], [1, 1, 0, 0, 0, 1, 1], [1, 1, 0, 0, 0, 1, 1] ];
+  const LAYERS = ["Budget set", "Utility hill", "Out-of-reach part", "Level sets", "Indifference curves (floor)", "Budget wall", "Optimum"];
+  const VIEWS = [[-90, 89.5], [-128, 30], [-128, 30], [-128, 30], [-128, 30], [-140, 28], [null, 4], [null, 4]];
+  let stage = 0, r = 1, layers = VIS[0].slice(), follow = false, fadeOut = false;
+  let cam = camFrom(-90, 89.5), animId = 0, seq = 0, progCam = false;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const $ = id => document.getElementById(id);
+  const gd3 = $("plot3d"), gd2 = $("plot2d");
+
+  function camFrom(th, el, rho = RHO) {
+    const t = th * Math.PI / 180, e = el * Math.PI / 180;
+    return { eye: { x: rho * Math.cos(e) * Math.cos(t), y: rho * Math.cos(e) * Math.sin(t), z: rho * Math.sin(e) },
+             up: { x: 0, y: 0, z: 1 }, center: { x: 0, y: 0, z: -0.05 }, projection: { type: "orthographic" } };
+  }
+  function angles(c) {
+    const { x, y, z } = c.eye, rho = Math.hypot(x, y, z);
+    return { th: Math.atan2(y, x) * 180 / Math.PI, el: Math.asin(z / rho) * 180 / Math.PI, rho };
+  }
+  const wallTheta = () => Math.atan2(1, r) * 180 / Math.PI;   // face the budget line from outside
+
+  // ---------- colors from the theme ----------
+  function tok(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  let C = {};
+  function readTheme() { C = { ink: tok("--ink"), muted: tok("--muted"), line: tok("--line"), budget: tok("--budget"), opt: tok("--opt"), panel: tok("--panel") }; }
+
+  // ---------- 3-D figure ----------
+  function surfaces() {
+    const b2 = r * Y1 + Y2;
+    const F = g.map(c2 => g.map(c1 => c2 <= b2 - r * c1));
+    if (!fadeOut) return { zin: U, zout: null };                    // one piece until the budget cuts the hill: no seam
+    const zin = U.map((row, j) => row.map((z, i) => F[j][i] ? z : null));
+    const zout = U.map((row, j) => row.map((z, i) => {            // overlap one cell so no seam shows
+      for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) {
+        const a = F[j + dj], v = a && a[i + di]; if (a && v === false) return z; }
+      return null; }));
+    return { zin, zout };
+  }
+  const SCALE = [[0, "#2b1d6b"], [0.25, "#2f5ea8"], [0.5, "#20a3a0"], [0.75, "#8fcf6a"], [1, "#f4e463"]];
+
+  function traces3d() {
+    const o = optimum(r), { zin, zout } = surfaces(), on = i => !!layers[i];
+    const ridgeX = [], ridgeY = [], ridgeZ = [];
+    for (let i = 0; i <= 300; i++) {
+      const c1 = 0.01 + (o.b1 - 0.02) * i / 300, c2 = o.b2 - r * c1, z = u(c1, c2);
+      ridgeX.push(c1); ridgeY.push(c2); ridgeZ.push(z < ZMIN ? null : z);
+    }
+    const icS = icCurve(o.u, o.u + 0.01), icF = icCurve(o.u, ZMIN);
+    const surf = (z, op, vis) => ({ type: "surface", x: g, y: g, z, cmin: ZMIN, cmax: ZMAX, colorscale: SCALE, showscale: false,
+      opacity: op, visible: vis, hovertemplate: "C₁ %{x:.2f}<br>C₂ %{y:.2f}<br>u %{z:.2f}<extra></extra>",
+      lighting: { ambient: 0.75, diffuse: 0.5, specular: 0.08 }, contours: { x: { highlight: false }, y: { highlight: false }, z: { highlight: false } } });
+    const line = (x, y, z, color, width, vis, dash) => ({ type: "scatter3d", mode: "lines", x, y, z, visible: vis, hoverinfo: "skip",
+      line: { color, width, dash: dash || "solid" }, connectgaps: false });
+    const pt = (x, y, z, color, size, vis) => ({ type: "scatter3d", mode: "markers", x: [x], y: [y], z: [z], visible: vis, hoverinfo: "skip",
+      marker: { color, size, line: { color: C.panel, width: 1 } } });
+    return [
+      surf(zin, on(4) ? 0.8 : 0.95, on(1)),                         // see-through when the floor curves are on
+      surf(zout || [[null]], 0.16, !!zout && on(1) && on(2)),
+      line(LEV_S.x, LEV_S.y, LEV_S.z, C.ink, 2, on(3)),
+      line(LEV_F.x, LEV_F.y, LEV_F.z, C.ink, 2.5, on(4)),
+      { type: "mesh3d", x: [0, o.b1, 0], y: [0, 0, o.b2], z: [ZMIN, ZMIN, ZMIN], i: [0], j: [1], k: [2], color: C.budget, opacity: 0.28, visible: on(0), hoverinfo: "skip", flatshading: true },
+      line([0, o.b1], [o.b2, 0], [ZMIN, ZMIN], C.budget, 7, on(0)),
+      pt(Y1, Y2, ZMIN, C.ink, 5, on(0)),
+      { type: "mesh3d", x: [0, o.b1, o.b1, 0], y: [o.b2, 0, 0, o.b2], z: [ZMIN, ZMIN, ZMAX, ZMAX], i: [0, 0], j: [1, 2], k: [2, 3],
+        color: C.budget, opacity: 0.17, visible: on(5), hoverinfo: "skip", flatshading: true },
+      line([0, o.b1, o.b1, 0, 0], [o.b2, 0, 0, o.b2, o.b2], [ZMIN, ZMIN, ZMAX, ZMAX, ZMIN], C.budget, 3, on(5)),
+      line(ridgeX, ridgeY, ridgeZ, C.opt, 8, on(6)),
+      line(icS.x, icS.y, icS.z, C.opt, 4, on(6)),
+      line(icF.x, icF.y, icF.z, C.opt, 4, on(6)),
+      line([o.c1, o.c1], [o.c2, o.c2], [ZMIN, o.u], C.opt, 3, on(6), "dash"),
+      pt(o.c1, o.c2, o.u, C.opt, 7, on(6)),
+      pt(o.c1, o.c2, ZMIN, C.opt, 5, on(6))
+    ];
+  }
+  function axis(title, range) {
+    return { title: { text: title, font: { family: "IBM Plex Sans, system-ui, sans-serif", size: 14, color: C.ink } }, range,
+      color: C.muted, gridcolor: C.line, zerolinecolor: C.line, showbackground: false, showspikes: false,
+      tickfont: { family: "IBM Plex Mono, monospace", size: 11, color: C.muted } };
+  }
+  function layout3() {
+    return { margin: { l: 0, r: 0, t: 0, b: 0 }, paper_bgcolor: "rgba(0,0,0,0)", showlegend: false, uirevision: "keep",
+      font: { family: "IBM Plex Sans, system-ui, sans-serif", color: C.ink },
+      scene: { xaxis: axis("C₁ (today)", [0, CMAX]), yaxis: axis("C₂ (tomorrow)", [0, CMAX]), zaxis: { ...axis("utility", [ZMIN, ZMAX]), tickvals: [-2, -1, 0, 1] },
+        aspectmode: "manual", aspectratio: { x: BOX, y: BOX, z: 0.9 * BOX }, camera: cam, dragmode: "turntable" } };
+  }
+
+  // ---------- 2-D figure ----------
+  function traces2d() {
+    const o = optimum(r), ic = icCurve(o.u, 0), on = !!layers[6];
+    return [
+      { type: "scatter", x: [0, o.b1, 0, 0], y: [0, 0, o.b2, 0], fill: "toself", fillcolor: C.budget.startsWith("#") ? C.budget + "2a" : C.budget, line: { width: 0 }, hoverinfo: "skip" },
+      { type: "scatter", mode: "lines", x: LEV_2D.x, y: LEV_2D.y, line: { color: C.line, width: 1 }, hoverinfo: "skip", connectgaps: false },
+      { type: "scatter", mode: "lines", x: [0, o.b1], y: [o.b2, 0], line: { color: C.budget, width: 3 }, hoverinfo: "skip" },
+      { type: "scatter", mode: "lines", x: ic.x, y: ic.y, line: { color: C.opt, width: 2.5 }, visible: on, hoverinfo: "skip" },
+      { type: "scatter", mode: "markers", x: [o.c1], y: [o.c2], marker: { color: C.opt, size: 10 }, visible: on,
+        hovertemplate: "optimum<br>C₁* %{x:.2f}<br>C₂* %{y:.2f}<extra></extra>" },
+      { type: "scatter", mode: "markers", x: [Y1], y: [Y2], marker: { color: C.ink, size: 8 }, hovertemplate: "endowment<extra></extra>" }
+    ];
+  }
+  function layout2() {
+    const ax = t => ({ title: { text: t, font: { size: 13, color: C.ink } }, range: [0, CMAX], color: C.muted, gridcolor: "rgba(0,0,0,0)",
+      zeroline: false, linecolor: C.muted, mirror: false, ticks: "outside", tickfont: { family: "IBM Plex Mono, monospace", size: 11, color: C.muted }, fixedrange: true });
+    return { margin: { l: 44, r: 10, t: 6, b: 40 }, paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)", showlegend: false,
+      font: { family: "IBM Plex Sans, system-ui, sans-serif", color: C.ink },
+      xaxis: ax("C₁"), yaxis: { ...ax("C₂"), scaleanchor: "x", scaleratio: 1 },
+      annotations: [{ x: Y1, y: Y2, ax: Y1 + 0.75, ay: Y2 + 1.15, axref: "x", ayref: "y", text: "endowment (Y₁, Y₂)", showarrow: true,
+        arrowhead: 2, arrowsize: 1, arrowwidth: 1.4, arrowcolor: C.ink, standoff: 5, font: { size: 12, color: C.ink } }] };
+  }
+
+  // ---------- render ----------
+  function render() {
+    Plotly.react(gd3, traces3d(), layout3(), { displayModeBar: false, responsive: true });
+    Plotly.react(gd2, traces2d(), layout2(), { displayModeBar: false, responsive: true, staticPlot: false });
+    const o = optimum(r);
+    $("rval").textContent = r.toFixed(2); $("r").value = r;
+    $("o1").textContent = o.c1.toFixed(2); $("o2").textContent = o.c2.toFixed(2);
+    $("oS").textContent = (o.S >= 0 ? "" : "−") + Math.abs(o.S).toFixed(2); $("oU").textContent = o.u.toFixed(2);
+    const p = $("pill");
+    if (o.S > 0.005) { p.textContent = "Saver: S* > 0"; p.className = "pill saver"; }
+    else if (o.S < -0.005) { p.textContent = "Borrower: S* < 0"; p.className = "pill borrower"; }
+    else { p.textContent = "Neither saves nor borrows"; p.className = "pill"; }
+    [...$("chips").children].forEach((b, i) => b.setAttribute("aria-pressed", String(!!layers[i])));
+    $("follow").setAttribute("aria-pressed", String(follow));
+  }
+  function setCam(c) { cam = c; progCam = true; Plotly.relayout(gd3, { "scene.camera": c }).then(() => { progCam = false; }); }
+
+  // ---------- animation ----------
+  function stop() { animId++; seq++; setBusy(false); }
+  function setBusy(b) { ["bWall", "bSpin", "bSweep"].forEach(id => $(id).disabled = b); }
+  function tween(ms, step) {
+    const id = ++animId; setBusy(true);
+    return new Promise(res => {
+      if (reduce) { step(1); setBusy(false); return res(); }
+      const t0 = performance.now();
+      (function frame(t) {
+        if (id !== animId) return res();
+        const s = Math.min(1, (t - t0) / ms); step(s);
+        if (s < 1) requestAnimationFrame(frame); else { setBusy(false); res(); }
+      })(t0);
+    });
+  }
+  function flyTo(th, el, ms = 1500) {
+    const a = angles(cam), d = ((th - a.th + 540) % 360) - 180, rho = RHO;
+    return tween(ms, s => { const e = (1 - Math.cos(Math.PI * s)) / 2;
+      setCam(camFrom(a.th + e * d, a.el + e * (el - a.el), a.rho + e * (rho - a.rho))); });
+  }
+  function spin() {
+    const a = angles(cam);
+    return tween(9000, s => setCam(camFrom(a.th + 360 * s, a.el, a.rho)));
+  }
+  function sweep() {
+    const my = ++seq, path = [[r, 0.3, 1400], [0.3, 2, 4200], [2, 1, 2000]];
+    let p = Promise.resolve();
+    path.forEach(([a, b, ms]) => { p = p.then(() => { if (seq === my) return tween(ms, s => setR(a + (b - a) * s)); }); });
+    return p;
+  }
+  function setR(v) {
+    r = Math.round(v * 1000) / 1000; render();
+    if (follow) { const a = angles(cam); setCam(camFrom(wallTheta(), a.el, a.rho)); }
+  }
+
+  // ---------- stages ----------
+  function goStage(s, animate) {
+    if (s < 0 || s >= STAGES.length) return;
+    stop(); stage = s;
+    layers = VIS[s].slice(); fadeOut = s >= 4; follow = s >= 6;
+    $("num").textContent = `STAGE ${s + 1} OF ${STAGES.length}`;
+    $("stTitle").textContent = STAGES[s][0]; $("stCap").textContent = STAGES[s][1];
+    [...$("dots").children].forEach((d, i) => d.setAttribute("aria-current", i === s ? "step" : "false"));
+    $("bBack").disabled = s === 0; $("bNext").disabled = s === STAGES.length - 1;
+    render();
+    const [th0, el] = VIEWS[s], th = th0 === null ? wallTheta() : th0;
+    if (!animate) { setCam(camFrom(th, el)); return; }
+    const my = seq;
+    flyTo(th, el, s === 1 ? 2600 : 1500).then(() => { if (s === 7 && seq === my) sweep(); });
+  }
+
+  // ---------- controls ----------
+  STAGES.forEach((_, i) => { const b = document.createElement("button"); b.className = "dot"; b.textContent = i + 1;
+    b.setAttribute("aria-label", `Stage ${i + 1}: ${STAGES[i][0]}`); b.onclick = () => goStage(i, true); $("dots").appendChild(b); });
+  LAYERS.forEach((name, i) => { const b = document.createElement("button"); b.className = "chip"; b.textContent = name;
+    b.onclick = () => { layers[i] = layers[i] ? 0 : 1; render(); }; $("chips").appendChild(b); });
+  $("follow").onclick = () => { follow = !follow; if (follow) { const a = angles(cam); setCam(camFrom(wallTheta(), a.el, a.rho)); } render(); };
+  $("bBack").onclick = () => goStage(stage - 1, true);
+  $("bNext").onclick = () => goStage(stage + 1, true);
+  $("bWall").onclick = () => { layers[2] = 0; render(); flyTo(wallTheta(), 4, 2200); };
+  $("bSpin").onclick = () => spin();
+  $("bSweep").onclick = () => sweep();
+  $("bStop").onclick = stop;
+  $("r").addEventListener("input", e => { stop(); setR(+e.target.value); });
+  document.addEventListener("keydown", e => {
+    if (e.target.tagName === "INPUT") return;
+    if (e.key === "ArrowRight") goStage(stage + 1, true);
+    if (e.key === "ArrowLeft") goStage(stage - 1, true);
+  });
+
+  // ---------- boot ----------
+  readTheme();
+  Plotly.newPlot(gd3, traces3d(), layout3(), { displayModeBar: false, responsive: true });
+  Plotly.newPlot(gd2, traces2d(), layout2(), { displayModeBar: false, responsive: true });
+  gd3.on("plotly_relayouting", () => { stop(); follow = false; $("follow").setAttribute("aria-pressed", "false"); });   // a hand drag wins
+  gd3.on("plotly_relayout", ev => { if (!progCam && ev["scene.camera"]) { cam = { ...ev["scene.camera"], projection: { type: "orthographic" } }; follow = false; render(); } });
+  const m = /^#stage-([1-8])$/.exec(location.hash);              // e.g. #stage-6 opens at stage 6
+  goStage(m ? +m[1] - 1 : 0, false);
+  const reTheme = () => { readTheme(); render(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", reTheme);
+  new MutationObserver(reTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+</body>
+</html>
