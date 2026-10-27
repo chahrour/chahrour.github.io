@@ -278,7 +278,9 @@ body { margin: 0 }  .dl { padding: 14px 16px; display: grid; gap: 4px }
       line(icF.x, icF.y, icF.z, C.opt, 4, on(6)),
       line([o.c1, o.c1], [o.c2, o.c2], [ZMIN, o.u], C.opt, 3, on(6), "dash"),
       pt(o.c1, o.c2, o.u, C.opt, 7, on(6)),
-      pt(o.c1, o.c2, ZMIN, C.opt, 5, on(6))
+      pt(o.c1, o.c2, ZMIN, C.opt, 5, on(6)),
+      { type: "scatter3d", mode: "text", x: [CMAX, 0], y: [0, CMAX], z: [ZMIN, ZMIN], text: ["C₁ (today)", "C₂ (tomorrow)"],   // labels stay horizontal from any angle
+        textposition: ["middle right", "middle left"], textfont: { family: "IBM Plex Sans, system-ui, sans-serif", size: 15, color: C.ink }, hoverinfo: "skip" }
     ];
   }
   function axis(title, range) {
@@ -289,7 +291,7 @@ body { margin: 0 }  .dl { padding: 14px 16px; display: grid; gap: 4px }
   function layout3() {
     return { margin: { l: 0, r: 0, t: 0, b: 0 }, paper_bgcolor: "rgba(0,0,0,0)", showlegend: false, uirevision: "keep",
       font: { family: "IBM Plex Sans, system-ui, sans-serif", color: C.ink },
-      scene: { xaxis: axis("C₁ (today)", [0, CMAX]), yaxis: axis("C₂ (tomorrow)", [0, CMAX]), zaxis: { ...axis("utility", [ZMIN, ZMAX]), tickvals: [-2, -1, 0, 1] },
+      scene: { xaxis: axis("", [0, CMAX]), yaxis: axis("", [0, CMAX]), zaxis: { ...axis("utility", [ZMIN, ZMAX]), tickvals: [-2, -1, 0, 1] },
         aspectmode: "manual", aspectratio: { x: BOX, y: BOX, z: 0.9 * BOX }, camera: cam, dragmode: "turntable" } };
   }
 
