@@ -138,7 +138,7 @@ function tick() {
   const r = remaining();
   if (end && !r) { done = end; end = null; left = 0; save(); }
   $('#t0').textContent = hm(t0);
-  $('#t1').textContent = hm(end || done || Date.now() + left); // paused: end slides with the clock
+  $('#t1').textContent = hm(end || done || t0 && Date.now() + left); // paused: end slides with the clock; blank until started
   $('#clock').textContent = r ? fmt(r) : 'Time is up';
   $('#bar').style.width = r / TOTAL * 100 + '%';
   document.body.classList.toggle('late', r <= 5 * 60000);
