@@ -14,6 +14,9 @@ body { height:100vh; overflow:hidden; display:flex; flex-direction:column; gap:.
 
 #policy { display:flex; align-items:center; gap:1.2rem; background:var(--red); color:#fff; padding:.8rem 1.3rem;
           border-radius:.6rem; font-size:1.2rem; font-weight:500 }
+[data-stage="0"] #policy { animation:alarm 9s ease-in-out infinite }
+@keyframes alarm { 0%,100% { background:#b42318 } 25% { background:#9d174d } 50% { background:#6b21a8 } 75% { background:#a15c07 } }
+#policy u { text-underline-offset:.15em }
 #policy b { flex:none; text-transform:uppercase; letter-spacing:.08em; font-size:1rem; border:2px solid #fff;
             padding:.25rem .7rem; border-radius:.4rem }
 
@@ -69,7 +72,7 @@ main { flex:1; min-height:0; display:flex; flex-direction:column; gap:.8rem }
 <body data-stage="0">
 
 <header id="policy"><b>Strict policy</b>
-  <span>If you access a device after receiving your exam, you will receive a zero and may be subject to academic integrity proceedings.</span></header>
+  <span>If you <u>access a device after receiving your exam</u>, you will receive a zero and may be subject to academic integrity proceedings.</span></header>
 
 <section id="timer">
   <div id="clockrow"><div id="times"><div>Started <b id="t0">—</b></div><div>Ends <b id="t1">—</b></div></div><div id="clock">1:15:00</div>
