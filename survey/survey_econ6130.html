@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECON 6130 — Topic Selection for Final Days</title>
+
+<script>
+/* ============================================================================
+   SETTINGS — the topics and the point budget live in Code.gs, not here.
+   ========================================================================= */
+const CONFIG = {
+
+  // The Web app URL from your Apps Script deployment. Ends in /exec
+  endpoint: "https://script.google.com/macros/s/AKfycbzKWGh0cyToaZ_SQKGAVX33L0B6J2KlTJKYZnLdjm14mmKfQYBa1yJVSwpCz_Ld9hzS9Q/exec",
+
+  heading:  "ECON 6130 — Topic Selection for Final Days",
+  question: "What should we cover in the final days of class?",
+  // {n} is replaced by the budget.
+  intro:    "You have {n} points. Spread them across the topics however you " +
+            "like — all on one, or split among several. More points means a " +
+            "stronger preference.",
+
+  submitLabel: "Submit my vote",
+  doneHeading: "Thank you — your vote is recorded.",
+  doneNote:    "You can close this page. To change your vote, come back to it " +
+               "in this same browser.",
+  closedNote:  "This vote is now closed.",
+
+  footnote: "Responses are anonymous."
+};
+/* ======================================================================== */
+</script>
+
+<style>
+  :root {
+    color-scheme: light;
+    --bg:      #ffffff;
+    --panel:   #f7f7f5;
+    --ink:     #1a1a18;
+    --muted:   #6b6b66;
+    --line:    #e0e0da;
+    --accent:  #2f5d50;
+    --accent-ink: #ffffff;
+    --warn-bg: #fdf6e3;
+    --warn-line:#e8d9a8;
+    --radius:  8px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg:      #16171a;
+      --panel:   #1e2024;
+      --ink:     #e9e9e6;
+      --muted:   #9a9a94;
+      --line:    #33353a;
+      --accent:  #6fae9b;
+      --accent-ink: #10201b;
+      --warn-bg: #2a2618;
+      --warn-line:#4a4327;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem 4rem;
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.55 var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 40rem; margin: 0 auto; }
+
+  h1 { font-size: 1.5rem; line-height: 1.25; margin: 0 0 .35rem; letter-spacing: -.01em; }
+  .question { font-size: 1.05rem; margin: 0 0 .5rem; }
+  .intro { color: var(--muted); margin: 0 0 1.25rem; font-size: .95rem; }
+
+  button {
+    font: inherit; cursor: pointer; border-radius: var(--radius);
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    padding: .45rem .9rem; transition: background .12s, border-color .12s;
+  }
+  button:hover:not(:disabled) { border-color: var(--muted); }
+  button:disabled { opacity: .4; cursor: default; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button.primary:hover:not(:disabled) { filter: brightness(1.08); }
+  .linkbtn {
+    background: none; border: none; padding: 0; color: var(--muted);
+    font-size: .9rem; text-decoration: underline; text-underline-offset: 2px;
+  }
+  .linkbtn:hover { color: var(--ink); }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+  #topics { border-top: 1px solid var(--line); }
+  #topics li {
+    display: flex; align-items: center; gap: .9rem;
+    padding: .7rem 0; border-bottom: 1px solid var(--line);
+  }
+  #topics .label { flex: 1; min-width: 0; }
+  #topics li.has .label { font-weight: 600; }
+  .stepper { display: flex; align-items: center; gap: .35rem; flex: 0 0 auto; }
+  .stepper button {
+    width: 2.5rem; height: 2.5rem; padding: 0; font-size: 1.25rem; line-height: 1;
+  }
+  .stepper output {
+    width: 2rem; text-align: center; font-size: 1.15rem; font-weight: 600;
+    font-variant-numeric: tabular-nums; color: var(--muted);
+  }
+  li.has .stepper output { color: var(--accent); }
+
+  .row { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; }
+  .finish { margin-top: 1.25rem; }
+  .left { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
+  .left.ready { color: var(--accent); font-weight: 600; }
+
+  .notice {
+    background: var(--warn-bg); border: 1px solid var(--warn-line);
+    border-radius: var(--radius); padding: .7rem .8rem; margin: 0 0 1rem; font-size: .9rem;
+  }
+  .error { color: #b23b3b; font-size: .9rem; margin: .75rem 0 0; }
+  .status { color: var(--muted); font-size: .9rem; padding: 1rem 0; }
+
+  .done {
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: var(--radius); background: var(--panel);
+    padding: 1.1rem 1.2rem; margin: .5rem 0 1rem;
+  }
+  .donemsg { margin: 0 0 .4rem; font-size: 1.05rem; font-weight: 600; }
+  .donenote { margin: 0 0 .8rem; color: var(--muted); font-size: .9rem; }
+  #summary li { display: flex; gap: .75rem; padding: .15rem 0; }
+  #summary .n { width: 1.25rem; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+  footer { color: var(--muted); font-size: .8rem; margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1 id="heading"></h1>
+  <p class="question" id="question"></p>
+  <p class="intro" id="intro"></p>
+
+  <p class="notice" id="closed" hidden></p>
+  <p class="status" id="status" role="status">Loading…</p>
+
+  <section id="stage-vote" hidden>
+    <ul id="topics"></ul>
+    <div class="finish row">
+      <button type="button" class="primary" id="submit"></button>
+      <span class="left" id="left" aria-live="polite"></span>
+    </div>
+    <p class="error" id="error" role="alert" hidden></p>
+  </section>
+
+  <section id="stage-done" hidden>
+    <div class="done">
+      <p class="donemsg" id="donemsg"></p>
+      <p class="donenote" id="donenote"></p>
+      <ul id="summary"></ul>
+    </div>
+    <p><button type="button" class="linkbtn" id="change">Change my vote</button></p>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+
+  // Must equal VERSION in Code.gs. A mismatch means an old deployment is live.
+  const NEEDS_VERSION = 1;
+  const STALE_MSG = 'This page and the Apps Script deployment behind it are out of ' +
+    'step. In the script editor: Deploy ▸ Manage deployments ▸ pencil ▸ ' +
+    'Version: New version ▸ Deploy.';
+
+  const state = { topics: [], budget: 0, alloc: {}, open: true, busy: false, rows: {} };
+
+  function stored(key) { try { return localStorage.getItem(key) || ''; } catch (e) { return ''; } }
+  function store(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+
+  const VOTER = (function () {
+    const KEY = 'econ6130-topic-id';
+    let id = stored(KEY);
+    if (!/^[A-Za-z0-9_-]{6,64}$/.test(id)) {
+      id = 'p' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+      store(KEY, id);
+    }
+    return id;
+  })();
+
+  /* JSONP: reaches an Apps Script web app from any domain with no CORS
+     preflight to go wrong. */
+  let seq = 0;
+  function api(params) {
+    return new Promise(function (resolve, reject) {
+      if (CONFIG.endpoint.indexOf('http') !== 0) {
+        reject(new Error('This page has not been connected to a spreadsheet yet.'));
+        return;
+      }
+      const cb = '__tv' + (++seq) + '_' + Date.now();
+      const s = document.createElement('script');
+      const timer = setTimeout(function () { done(); reject(new Error('The server did not respond.')); }, 25000);
+      function done() {
+        clearTimeout(timer);
+        delete window[cb];
+        s.remove();
+      }
+      window[cb] = function (res) {
+        done();
+        if (res && res.ok) resolve(res.data);
+        else reject(new Error((res && res.error) || 'Something went wrong.'));
+      };
+      s.onerror = function () { done(); reject(new Error('Could not reach the server.')); };
+      params.voter = VOTER;
+      params.callback = cb;
+      s.src = CONFIG.endpoint + '?' + new URLSearchParams(params);
+      document.head.appendChild(s);
+    });
+  }
+
+  /* Each respondent gets their own topic order, fixed across reloads, so no
+     topic benefits from always being listed first. */
+  function ordered(topics) {
+    const KEY = 'econ6130-topic-order';
+    let order = [];
+    try { order = JSON.parse(stored(KEY)) || []; } catch (e) {}
+    const ids = topics.map(t => t.id);
+    if (order.length !== ids.length || !ids.every(id => order.includes(id))) {
+      order = ids.slice();
+      for (let i = order.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [order[i], order[j]] = [order[j], order[i]];
+      }
+      store(KEY, JSON.stringify(order));
+    }
+    return order.map(id => topics.find(t => t.id === id));
+  }
+
+  const left = () => state.budget - state.topics.reduce((s, t) => s + state.alloc[t.id], 0);
+
+  function build() {
+    const ul = $('topics');
+    ul.innerHTML = '';
+    state.topics.forEach(function (t) {
+      const li = document.createElement('li');
+      const label = document.createElement('span');
+      label.className = 'label';
+      label.textContent = t.label;
+
+      const minus = document.createElement('button'), plus = document.createElement('button');
+      const out = document.createElement('output');
+      minus.type = plus.type = 'button';
+      minus.textContent = '−';
+      plus.textContent = '+';
+      minus.setAttribute('aria-label', 'Remove a point from ' + t.label);
+      plus.setAttribute('aria-label', 'Add a point to ' + t.label);
+      minus.onclick = () => { state.alloc[t.id]--; update(); };
+      plus.onclick  = () => { state.alloc[t.id]++; update(); };
+
+      const stepper = document.createElement('div');
+      stepper.className = 'stepper';
+      stepper.append(minus, out, plus);
+      li.append(label, stepper);
+      li.dataset.topic = t.id;
+      ul.appendChild(li);
+      state.rows[t.id] = { li, minus, plus, out };
+    });
+  }
+
+  function update() {
+    const n = left(), locked = state.busy || !state.open;
+    state.topics.forEach(function (t) {
+      const r = state.rows[t.id], v = state.alloc[t.id];
+      r.out.textContent = v;
+      r.li.classList.toggle('has', v > 0);
+      r.minus.disabled = locked || v === 0;
+      r.plus.disabled = locked || n === 0;
+    });
+    $('left').textContent = n === 0
+      ? 'All ' + state.budget + ' points allocated'
+      : n + ' of ' + state.budget + (n === 1 ? ' point' : ' points') + ' left';
+    $('left').className = 'left' + (n === 0 ? ' ready' : '');
+    $('submit').disabled = locked || n !== 0;
+  }
+
+  function show(stage) {
+    $('stage-vote').hidden = stage !== 'vote';
+    $('stage-done').hidden = stage !== 'done';
+    $('intro').hidden = stage !== 'vote';
+    if (stage === 'vote') { update(); return; }
+
+    const ul = $('summary');
+    ul.innerHTML = '';
+    state.topics.filter(t => state.alloc[t.id] > 0)
+      .sort((a, b) => state.alloc[b.id] - state.alloc[a.id])
+      .forEach(function (t) {
+        const li = document.createElement('li'), n = document.createElement('span');
+        n.className = 'n';
+        n.textContent = state.alloc[t.id];
+        li.append(n, t.label);
+        ul.appendChild(li);
+      });
+    $('change').hidden = !state.open;
+  }
+
+  function fail(msg) { $('error').textContent = msg; $('error').hidden = !msg; }
+
+  function submit() {
+    if (state.busy || left() !== 0) return;
+    state.busy = true;
+    fail('');
+    $('submit').textContent = 'Submitting…';
+    update();
+    api({ action: 'vote', alloc: JSON.stringify(state.alloc) })
+      .then(function (d) {
+        state.alloc = d.alloc;
+        show('done');
+        window.scrollTo(0, 0);
+      })
+      .catch(e => fail(e.message))
+      .then(function () {
+        state.busy = false;
+        $('submit').textContent = CONFIG.submitLabel;
+        update();
+      });
+  }
+
+  /* ------------------------------------------------------------------ init */
+  $('heading').textContent = CONFIG.heading;
+  document.title = CONFIG.heading;
+  $('question').textContent = CONFIG.question;
+  $('footer').textContent = CONFIG.footnote;
+  $('submit').textContent = CONFIG.submitLabel;
+  $('donemsg').textContent = CONFIG.doneHeading;
+  $('donenote').textContent = CONFIG.doneNote;
+  $('closed').textContent = CONFIG.closedNote;
+  $('intro').hidden = true;
+
+  $('submit').addEventListener('click', submit);
+  $('change').addEventListener('click', () => show('vote'));
+
+  api({ action: 'get' }).then(function (d) {
+    if (d.version !== NEEDS_VERSION) { $('status').textContent = STALE_MSG; return; }
+    $('status').hidden = true;
+    state.topics = ordered(d.topics);
+    state.budget = d.budget;
+    state.open = d.open;
+    state.alloc = d.alloc || {};
+    state.topics.forEach(t => { state.alloc[t.id] = state.alloc[t.id] || 0; });
+    $('intro').textContent = CONFIG.intro.replace('{n}', d.budget);
+    $('closed').hidden = d.open;
+    build();
+    // The server, not this browser, decides whether you have already voted.
+    show(d.alloc ? 'done' : 'vote');
+  }).catch(e => { $('status').textContent = e.message; });
+})();
+</script>
+</body>
+</html>
